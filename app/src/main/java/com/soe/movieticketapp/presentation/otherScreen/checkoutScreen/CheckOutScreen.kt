@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,12 +37,15 @@ import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
+import com.soe.movieticketapp.presentation.common.BuyTicketButton
 import com.soe.movieticketapp.presentation.common.CheckoutMovieImage
 import com.soe.movieticketapp.presentation.common.RatingBar
 import com.soe.movieticketapp.presentation.common.RatingText
 import com.soe.movieticketapp.presentation.common.SmallCardMovieImage
 import com.soe.movieticketapp.presentation.common.TitleText
 import com.soe.movieticketapp.presentation.common.TopBarWithPopUpScreen
+import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.component.CheckoutButton
+import com.soe.movieticketapp.stripePayment.StripePayment
 import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
 import com.soe.movieticketapp.util.FontSize
 import com.soe.movieticketapp.util.MovieType
@@ -99,7 +107,7 @@ fun CheckoutScreenContent(
     val seatCount = seats.split(",").size
     val tax = 3
     val totalTax = seatCount * tax
-
+    val totalAmount = price.toInt() + totalTax
 
 
     Scaffold(
@@ -110,210 +118,222 @@ fun CheckoutScreenContent(
             )
         }
     ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = it.calculateTopPadding()),
-        ){
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
             Box(
-                modifier = modifier
-                    .width(350.dp)
-                    .height(500.dp)
-                    .padding(Padding.Medium)
-                    .clip(RoundedCornerShape(Padding.Medium))
-                    .background(colorResource(R.color.DarkBlue))
-                    .align(Alignment.Center),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = it.calculateTopPadding()),
             ){
+                Box(
+                    modifier = modifier
+                        .width(350.dp)
+                        .height(500.dp)
+                        .padding(Padding.Medium)
+                        .clip(RoundedCornerShape(Padding.Medium))
+                        .background(colorResource(R.color.DarkBlue))
+                        .align(Alignment.Center),
+                ){
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .align(Alignment.TopStart),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                            .align(Alignment.TopStart),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                    //Movie Details
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.Top
-                    ){
-                        CheckoutMovieImage(
-                            imageUrl = "${BASE_POSTER_IMAGE_URL}${movie.posterPath}",
-                            context = context,
-                            contextDescription = "Movie Poster",
-                        )
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = Padding.Medium),
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TitleText(
-                                modifier = Modifier.padding(bottom = Padding.Small),
-                                text = movie.title ?: "",
-                                fontSize = FontSize.Large,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        //Movie Details
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.Top
+                        ){
+                            CheckoutMovieImage(
+                                imageUrl = "${BASE_POSTER_IMAGE_URL}${movie.posterPath}",
+                                context = context,
+                                contextDescription = "Movie Poster",
                             )
 
-                            TitleText(
-                                modifier = Modifier.padding(bottom = Padding.Small),
-                                text = detail.genres!!.joinToString(", ") {genre -> genre.name },
-                                fontSize = FontSize.Medium,
-                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
-                            )
-
-                            Row(
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = Padding.Small),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                RatingBar(
-                                    modifier = Modifier.padding(),
-                                    rating = (movie.voteAverage?.div(2)),
-                                    starsColor = Color.Yellow
+                                    .padding(start = Padding.Medium),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                TitleText(
+                                    modifier = Modifier.padding(bottom = Padding.Small),
+                                    text = movie.title ?: "",
+                                    fontSize = FontSize.Large,
+                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                                 )
 
-                                RatingText(
-                                    modifier = Modifier.padding(),
-                                    rating = movie.voteAverage,
-                                    color = Color.Yellow
+                                TitleText(
+                                    modifier = Modifier.padding(bottom = Padding.Small),
+                                    text = detail.genres.joinToString(", ") {genre -> genre.name },
+                                    fontSize = FontSize.Medium,
+                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
                                 )
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = Padding.Small),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    RatingBar(
+                                        modifier = Modifier.padding(),
+                                        rating = (movie.voteAverage?.div(2)),
+                                        starsColor = Color.Yellow
+                                    )
+
+                                    RatingText(
+                                        modifier = Modifier.padding(),
+                                        rating = movie.voteAverage,
+                                        color = Color.Yellow
+                                    )
+                                }
+
                             }
-
                         }
-                    }
 
 
-                    //Date , Time, Studio and Seat
-                    Row(
-                        modifier = Modifier
+                        //Date , Time, Studio and Seat
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Padding.Medium),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            CheckoutContent(
+                                text = stringResource(R.string.date),
+                                checkoutText = date
+                            )
+
+                            CheckoutContent(
+                                text = stringResource(R.string.time),
+                                checkoutText = time
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Padding.Medium),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            CheckoutContent(
+                                text = stringResource(R.string.studio),
+                                checkoutText = stringResource(R.string.studio_name),
+                            )
+
+                            CheckoutContent(
+                                text = stringResource(R.string.seat),
+                                checkoutText = seats
+                            )
+                        }
+
+
+                        Spacer(Modifier.height(Spacing.Medium))
+
+
+                        Box(modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = Padding.Medium),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        CheckoutContent(
-                            text = stringResource(R.string.date),
-                            checkoutText = date
-                        )
+                            .height(1.dp)
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)))
 
-                        CheckoutContent(
-                            text = stringResource(R.string.time),
-                            checkoutText = time
-                        )
-                    }
 
-                    Row(
-                        modifier = Modifier
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Padding.Medium),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            TitleText(
+                                text = if(seatCount == 1) "1 ${stringResource(R.string.ticket)}" else "$seatCount ${stringResource(R.string.tickets)}",
+                                fontSize = FontSize.Medium,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                            )
+
+                            TitleText(
+                                text = "$$price",
+                                fontSize = FontSize.Medium,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Padding.Medium),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            TitleText(
+                                text = stringResource(R.string.tax),
+                                fontSize = FontSize.Medium,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                            )
+
+                            TitleText(
+                                text = "$${seatCount * tax}",
+                                fontSize = FontSize.Medium,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+
+                        Spacer(Modifier.height(Spacing.Medium))
+
+                        Box(modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = Padding.Medium),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        CheckoutContent(
-                            text = stringResource(R.string.studio),
-                            checkoutText = stringResource(R.string.studio_name),
-                        )
-
-                        CheckoutContent(
-                            text = stringResource(R.string.seat),
-                            checkoutText = seats
-                        )
-                    }
+                            .height(1.dp)
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)))
 
 
-                    Spacer(Modifier.height(Spacing.Medium))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Padding.Medium),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            TitleText(
+                                text = stringResource(R.string.total),
+                                fontSize = FontSize.Large,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
 
+                            TitleText(
+                                text = "$$totalAmount",
+                                fontSize = FontSize.Large,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
 
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)))
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Padding.Medium),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        TitleText(
-                            text = "$seatCount ${stringResource(R.string.ticket)}",
-                            fontSize = FontSize.Medium,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        )
-
-                        TitleText(
-                            text = "$$price",
-                            fontSize = FontSize.Medium,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Padding.Medium),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        TitleText(
-                            text = stringResource(R.string.tax),
-                            fontSize = FontSize.Medium,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        )
-
-                        TitleText(
-                            text = "$${seatCount * tax}",
-                            fontSize = FontSize.Medium,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-
-                    Spacer(Modifier.height(Spacing.Medium))
-
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)))
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Padding.Medium),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        TitleText(
-                            text = stringResource(R.string.total),
-                            fontSize = FontSize.Medium,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-
-                        TitleText(
-                            text = "${price.toInt() + totalTax}",
-                            fontSize = FontSize.Medium,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
                     }
                 }
             }
+
+
+            StripePayment(
+                totalAmount
+            )
         }
     }
 
@@ -336,7 +356,7 @@ fun CheckoutContent(
             text = text,
             fontSize = FontSize.Medium,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
 
         )
 

@@ -11,6 +11,9 @@ const val BASE_BACKDROP_IMAGE_URL = "https://image.tmdb.org/t/p/w780/"
 const val BASE_POSTER_IMAGE_URL = "https://image.tmdb.org/t/p/w500/"
 const val LANGUAGE = "en-US"
 const val DATABASE_NAME = "movie_database"
+//const val BACKEND_URL_ENDPOINT = "http://127.0.0.1:5001/movieticketapp-348f0/us-central1/paymentSheet"
+const val BACKEND_URL_ENDPOINT = "http://10.0.2.2:5002/movieticketapp-348f0/us-central1/paymentSheet"
+const val PUBLISHABLE_KEY = "pk_test_51QNVWdChmcAte83iREunqT7b1HYtStAehONtPCjfovRTthQF5xCPEzwW1RW7ZtGvliDJsMeYGTJcVACTxz7pRvOU00CZULSJHn"
 
 const val PAGE_SIZE = 10
 

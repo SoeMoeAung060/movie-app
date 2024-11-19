@@ -2,17 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-
     alias(libs.plugins.ksp)
-//    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.parcelize)
 
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gms.google.services)
-//    alias(libs.plugins.kotlin.jvm)
-//    alias(libs.plugins.google.services)
-
 }
 
 android {
@@ -135,6 +130,13 @@ dependencies {
     //Compose Destination
     implementation(libs.core)
     ksp (libs.ksp)
+
+    // Stripe Android SDK
+    implementation(libs.stripe.android)
+    // Add the following lines to build.gradle to use this example's networking library:
+   implementation (libs.fuel.json)
+    implementation (libs.fuel)
+
 
 
 

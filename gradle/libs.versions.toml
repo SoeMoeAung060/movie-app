@@ -3,6 +3,8 @@ agp = "8.5.2"
 coilCompose = "3.0.0-rc01"
 coilNetworkOkhttp = "3.0.0-rc01"
 core = "1.9.63"
+fuel = "2.3.1"
+fuelJson = "2.3.1"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 espressoCore = "3.5.0"
@@ -32,6 +34,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 mockk = "1.12.0"
 roomPaging = "2.6.1"
+stripeAndroid = "21.2.0"
 timber = "5.0.1"
 truth = "1.4.4"
 turbine = "1.1.0"
@@ -82,6 +85,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "core" }
+fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
+fuel-json = { module = "com.github.kittinunf.fuel:fuel-json", version.ref = "fuelJson" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
@@ -116,6 +121,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripeAndroid" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
