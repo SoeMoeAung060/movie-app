@@ -40,7 +40,7 @@ fun TrendingMovie(
     Column (
         modifier = modifier
             .fillMaxWidth()
-            .height(636.dp)
+            .height(212.dp)
             .padding(horizontal = Padding.Medium),
     ){
         LazyVerticalGrid(
@@ -49,7 +49,7 @@ fun TrendingMovie(
             horizontalArrangement = Arrangement.Center,
             verticalArrangement = Arrangement.Center
         ){
-            items(count = minOf(movie.itemCount, 9)) { index->
+            items(count = minOf(movie.itemCount, 3)) { index->
                 val movie = movie[index] ?: return@items
 
                 TrendingGridItem(

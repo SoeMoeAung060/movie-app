@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -62,6 +63,26 @@ fun MovieAsyncImage(
 }
 
 
+
+@Composable
+fun NowPlayingMovieImage(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    context: Context,
+    contextDescription : String,
+) {
+    MovieAsyncImage(
+        modifier = modifier
+            .width(CardSize.LargeWidth)
+            .height(CardSize.LargeHeight)
+            .clip(RoundedCornerShape(BorderRadius.Medium))
+            .background(MaterialTheme.colorScheme.background),
+        imageUrl = imageUrl,
+        contentDescription = contextDescription,
+        context = context,
+        placeholder = R.drawable.detail_posterdrop_placeholder
+    )
+}
 
 
 @Composable

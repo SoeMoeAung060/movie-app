@@ -1,4 +1,4 @@
-package com.soe.movieticketapp.presentation.detail.components
+package com.soe.movieticketapp.presentation.otherScreen.seatScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +24,7 @@ import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailMovieTopBar(
+fun SeatScreenMovieTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
@@ -36,7 +36,7 @@ fun DetailMovieTopBar(
                     .padding(end = Padding.Large)
                     .wrapContentHeight(align = Alignment.CenterVertically),
                 textAlign = TextAlign.Center,
-                text = stringResource(R.string.detail_screen)
+                text = stringResource(R.string.select_seat),
             )
         },
         navigationIcon = {
@@ -53,7 +53,8 @@ fun DetailMovieTopBar(
             containerColor = MaterialTheme.colorScheme.background,
             navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
             titleContentColor = MaterialTheme.colorScheme.onBackground
-        )
+        ),
+
 
     )
 }
@@ -63,7 +64,7 @@ fun DetailMovieTopBar(
 @Composable
 private fun MovieListTopBarPreview() {
     MovieTicketAppTheme {
-        DetailMovieTopBar(
+        SeatScreenMovieTopBar(
             onBackClick = {}
         )
     }

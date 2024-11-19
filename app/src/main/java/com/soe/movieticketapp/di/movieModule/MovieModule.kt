@@ -13,6 +13,7 @@ import com.soe.movieticketapp.domain.repository.MovieRepository
 import com.soe.movieticketapp.domain.usecase.GetCastAndCrewMovies
 import com.soe.movieticketapp.domain.usecase.GetDetailMovies
 import com.soe.movieticketapp.domain.usecase.GetGenreMovies
+import com.soe.movieticketapp.domain.usecase.GetNowPlayingMovies
 import com.soe.movieticketapp.domain.usecase.GetSearchMovies
 import com.soe.movieticketapp.domain.usecase.GetSimilarMoviesAndTvSeries
 import com.soe.movieticketapp.domain.usecase.GetTrailersMovie
@@ -129,7 +130,8 @@ object MovieModule {
             getWatchProviders = GetWatchProviders(movieRepository),
             getTrailersMovie = GetTrailersMovie(movieRepository),
             getDetailMovies = GetDetailMovies(movieRepository),
-            getSearchMovies = GetSearchMovies(movieRepository)
+            getSearchMovies = GetSearchMovies(movieRepository),
+            getNowPlayingMovies = GetNowPlayingMovies(movieRepository)
         )
     }
 

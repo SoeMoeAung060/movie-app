@@ -51,6 +51,8 @@ appcompat = "1.7.0"
 constraintlayout = "1.0.1"
 navigationTesting = "2.8.2"
 firebaseAuth = "23.0.0"
+googleGmsGoogleServices = "4.4.2"
+firebaseFirestore = "25.1.1"
 
 [libraries]
 androidx-constraintlayout-compose-v110 = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
@@ -125,6 +127,7 @@ androidx-navigation-testing = { group = "androidx.navigation", name = "navigatio
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.4.0" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -135,6 +138,7 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt-andr
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin-parcelize" }
 kotlin-jvm= {id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 
 
 

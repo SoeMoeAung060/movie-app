@@ -5,6 +5,11 @@ import com.soe.movieticketapp.R
 object MovieIcons {
 
 
+    val home = R.drawable.home
+    val movie = R.drawable.movie
+    val wallet = R.drawable.wallet
+    val calendar = R.drawable.calendar
+
     val arrowLeft = R.drawable.arrow_left
     val arrowRight = R.drawable.arrow_right
     val arrowDown = R.drawable.arrow_down
@@ -25,5 +30,6 @@ object MovieIcons {
 
 
     val playIcon = R.drawable.round_play_circle_24
+
 
 }

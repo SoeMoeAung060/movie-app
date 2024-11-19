@@ -21,7 +21,8 @@ data class MovieUseCase(
     val getWatchProviders: GetWatchProviders,
     val getTrailersMovie: GetTrailersMovie,
     val getDetailMovies: GetDetailMovies,
-    val getSearchMovies: GetSearchMovies
+    val getSearchMovies: GetSearchMovies,
+    val getNowPlayingMovies: GetNowPlayingMovies
 )
 
 
@@ -30,6 +31,15 @@ class GetTrendingMovies(
 ){
      operator fun invoke(movieType: MovieType) : Flow<PagingData<Movie>> {
         return repository.getTrendingMovies(movieType)
+    }
+}
+
+
+class GetNowPlayingMovies(
+    private val repository: MovieRepository
+){
+    suspend operator fun invoke() : Flow<PagingData<Movie>>{
+        return repository.getNowPlayingMovies()
     }
 }
 

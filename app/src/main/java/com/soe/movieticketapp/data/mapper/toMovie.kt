@@ -2,6 +2,7 @@ package com.soe.movieticketapp.data.mapper
 
 import com.soe.movieticketapp.data.remote.dto.DetailResponseDTO
 import com.soe.movieticketapp.domain.model.Detail
+import com.soe.movieticketapp.domain.model.Movie
 
 
 fun DetailResponseDTO.toDetail() : Detail{
@@ -23,9 +24,12 @@ fun DetailResponseDTO.toDetail() : Detail{
         title = this.title,
         video = this.video,
         voteAverage = this.voteAverage,
-        voteCount = this.voteCount
+        voteCount = this.voteCount,
+        genres = this.genres
     )
 }
+
+
 
 
 //fun TrendingResponseDTO.toTrending() : Trending{

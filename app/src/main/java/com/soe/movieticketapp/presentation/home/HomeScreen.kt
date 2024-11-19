@@ -21,19 +21,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Movie
-import com.soe.movieticketapp.presentation.home.component.Carousel
 import com.soe.movieticketapp.presentation.home.component.GenreSelectContent
 import com.soe.movieticketapp.presentation.home.component.HeaderTextLine
+import com.soe.movieticketapp.presentation.home.component.NowPlayingHeader
+import com.soe.movieticketapp.presentation.home.component.NowPlayingMovie
 import com.soe.movieticketapp.presentation.home.component.TopBar
 import com.soe.movieticketapp.presentation.home.component.TrendingMovie
-import com.soe.movieticketapp.util.Movie
+import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Spacing
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
-import kotlinx.coroutines.flow.flowOf
 
 
 @Composable
@@ -42,16 +41,17 @@ fun HomeScreen(
     navigateToDetailScreen: (Movie) -> Unit,
     navigateToListScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToSearchScreen: () -> Unit
+    navigateToSearchScreen: () -> Unit,
 
     ) {
-
 
 
 
     // Collect trending movies
     val trendingContent = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
     Log.d("HomeScreen", "trendingMovies itemCount: ${trendingContent.itemCount}")
+
+    val nowPlayingState = viewModel.nowPlayingState.value.collectAsLazyPagingItems()
 
 
 
@@ -76,7 +76,9 @@ fun HomeScreen(
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(paddingValues),
+                .padding(
+                    top = paddingValues.calculateTopPadding()
+                ),
         ) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -98,11 +100,29 @@ fun HomeScreen(
 
                     if (trendingContent.itemCount > 0) {
                         item {
-                            Carousel(
-                                onClick = { navigateToDetailScreen(trendingContent[0]!!) },
-                                movie = trendingContent[0]!!
-                            )
+
                             Spacer(modifier = Modifier.height(Spacing.Medium))
+
+                            NowPlayingHeader(
+                                headerText = stringResource(R.string.now_playing)
+                            )
+
+                            Spacer(Modifier.height(Padding.Medium))
+
+                            NowPlayingMovie(
+                                movies = nowPlayingState,
+                                onClick = navigateToDetailScreen
+                            )
+
+
+                            Spacer(Modifier.height(Padding.Medium))
+
+
+//                            Carousel(
+//                                onClick = { navigateToDetailScreen(trendingContent[0]!!) },
+//                                movie = trendingContent[0]!!
+//                            )
+//                            Spacer(modifier = Modifier.height(Spacing.Medium))
                         }
 
                         // Trending Movies

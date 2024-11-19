@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,10 +22,12 @@ import androidx.compose.ui.unit.dp
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.presentation.common.BackDropMovieImage
+import com.soe.movieticketapp.presentation.common.BuyTicketButton
 import com.soe.movieticketapp.presentation.common.IconButton
 import com.soe.movieticketapp.presentation.common.LargeCardMovieImage
 import com.soe.movieticketapp.util.BASE_BACKDROP_IMAGE_URL
 import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
+import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Size
 import com.soe.movieticketapp.util.ui.theme.MovieIcons
 
@@ -34,11 +37,14 @@ import com.soe.movieticketapp.util.ui.theme.MovieIcons
 fun MovieBackdropAndPoster(
     modifier: Modifier = Modifier,
     movie: Movie,
-    onClickTrailer:(Int?)->Unit
+    onClickTrailer:(Int?)->Unit,
+    onClickBuyTicket: () -> Unit
 ) {
     Box(
 
     ) {
+
+
         BackDropMovieImage(
             modifier = modifier.fillMaxWidth(),
             imageUrl = "$BASE_BACKDROP_IMAGE_URL${movie.backdropPath}",
@@ -49,7 +55,7 @@ fun MovieBackdropAndPoster(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .height(200.dp)
                 .align(Alignment.BottomCenter)
                 .background(
                     Brush.verticalGradient(
@@ -66,7 +72,8 @@ fun MovieBackdropAndPoster(
 
         Box(
             modifier = modifier
-                .align(Alignment.BottomCenter)
+                .padding(start = Padding.Medium)
+                .align(Alignment.BottomStart)
                 .clickable { onClickTrailer(movie.id) },
         ) {
             LargeCardMovieImage(
@@ -84,6 +91,19 @@ fun MovieBackdropAndPoster(
                 tint = MaterialTheme.colorScheme.onBackground.copy(0.9f)
             )
         }
+
+
+        Box(
+            modifier = modifier
+                .padding(end = Padding.Medium)
+                .align(Alignment.BottomEnd),
+        ){
+            BuyTicketButton(
+                onClick = onClickBuyTicket,
+            )
+        }
+
+
 
     }
 }

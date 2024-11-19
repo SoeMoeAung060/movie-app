@@ -12,6 +12,7 @@ import com.soe.movieticketapp.data.remote.dto.GenresResponseDTO
 import com.soe.movieticketapp.data.remote.dto.TrailerResponseDTO
 import com.soe.movieticketapp.data.remote.dto.WatchProviderResponse
 import com.soe.movieticketapp.data.repository.paging.pagingSource.MultiSearchPagingSource
+import com.soe.movieticketapp.data.repository.paging.pagingSource.NowPlayingPagingSource
 import com.soe.movieticketapp.data.repository.paging.pagingSource.SimilarPagingSource
 import com.soe.movieticketapp.data.repository.paging.pagingSource.TrendingPagingSource
 import com.soe.movieticketapp.domain.model.Movie
@@ -23,6 +24,7 @@ import com.soe.movieticketapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @Suppress("UNREACHABLE_CODE")
 class MovieRepositoryImpl @Inject constructor(
@@ -71,6 +73,17 @@ class MovieRepositoryImpl @Inject constructor(
         ).flow
     }
 
+    override suspend fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                NowPlayingPagingSource(
+                    movieApi = movieApi
+                )
+            }
+        ).flow
+    }
+
 
     /** No Paging Source */
 
@@ -87,7 +100,7 @@ class MovieRepositoryImpl @Inject constructor(
                 movieApi.getTvShowCastAndCrew(movieId = movieId)
             }
 
-            Log.d("GetCastMovies", "getCastMovies: $response")
+            Log.d("GetCastMovies", "getCastMovies Response: $response")
 
 
             if (response.castResult.isEmpty()) {
@@ -99,6 +112,9 @@ class MovieRepositoryImpl @Inject constructor(
 
             return Resource.Success(response)
 
+        } catch (e: CancellationException) {
+            Log.e("GetCastMovies", "Job was cancelled: ${e.message}")
+            throw e // Let the coroutine framework handle cancellation properly
         } catch (e: Exception) {
             Log.e("GetCastMovies", "Error fetching cast: ${e.message}")
             return Resource.Error(message = e.message.toString())

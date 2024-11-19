@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.domain.usecase.MovieUseCase
@@ -44,6 +45,9 @@ class HomeViewModel @Inject constructor(
     private val _trendingMoviesState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
     val trendingMoviesState: State<Flow<PagingData<Movie>>> = _trendingMoviesState
 
+
+    private val _nowPlayingState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val nowPlayingState: State<Flow<PagingData<Movie>>> = _nowPlayingState
 
 
     init {
@@ -119,6 +123,20 @@ class HomeViewModel @Inject constructor(
                 movieUseCase.getTrendingMovies(movieType)
                     .cachedIn(viewModelScope)
             }
+        }
+    }
+
+
+
+    init {
+        getNowPlayingMovies()
+    }
+
+    private fun getNowPlayingMovies() {
+        viewModelScope.launch {
+            _nowPlayingState.value =
+                movieUseCase.getNowPlayingMovies()
+                    .cachedIn(viewModelScope)
         }
     }
 }

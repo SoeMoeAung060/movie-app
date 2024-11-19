@@ -1,5 +1,6 @@
 package com.soe.movieticketapp.data.remote.dto
 
+import com.soe.movieticketapp.domain.model.Genre
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -9,6 +10,8 @@ data class DetailResponseDTO(
     val budget: Int,
     @SerialName("homepage")
     val homepage: String,
+    @SerialName("genres")
+    val genres: List<Genre>,
     @SerialName("id")
     val id: Int,
     @SerialName("imdb_id")

@@ -41,6 +41,7 @@ fun DetailScreenUi(
     navigateToCastAndCrewScreen: (Movie) -> Unit,
     onClickTrailer: (Int?)->Unit,
     detailScreenViewModel: DetailScreenViewModel = hiltViewModel(),
+    onClickBuyTicket: () -> Unit
 ) {
 
     val similarMovies = detailScreenViewModel.similarMoviesAndTvSeries.collectAsLazyPagingItems()
@@ -56,7 +57,8 @@ fun DetailScreenUi(
             item {
                 MovieBackdropAndPoster(
                     movie = movie,
-                    onClickTrailer = onClickTrailer
+                    onClickTrailer = onClickTrailer,
+                    onClickBuyTicket = onClickBuyTicket
                 )
             }
 
@@ -186,8 +188,13 @@ private fun DetailScreenContentPreview() {
                 title = "Sample Movie",
                 video = false,
                 voteAverage = 7.8,
-                voteCount = 1500
-            )
+                voteCount = 1500,
+                genres = listOf(
+                    Genre(3, "Animation"),
+                    Genre(4, "Comedy")
+                )
+            ),
+            onClickBuyTicket = {}
         )
     }
     

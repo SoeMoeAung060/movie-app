@@ -30,8 +30,10 @@ data class Detail(
     val revenue: Int,
     @SerialName("runtime")
     val runtime: Int? = null,
-    @SerialName("")
+    @SerialName("status")
     val status: String,
+    @SerialName("genres")
+    val genres: List<Genre>,
     @SerialName("tagline")
     val tagline: String,
     @SerialName("title")

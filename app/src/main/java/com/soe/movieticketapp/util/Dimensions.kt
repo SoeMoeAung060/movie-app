@@ -34,8 +34,8 @@ object CardSize {
     val MediumWidth = 180.dp
     val MediumHeight = 220.dp
 
-    val LargeWidth = 240.dp
-    val LargeHeight = 280.dp
+    val LargeWidth = 200.dp
+    val LargeHeight = 250.dp
 }
 
 
@@ -47,6 +47,7 @@ object Banner{
     val BackDropWidth = 375.dp
     val BackDropHeight = 300.dp
 }
+
 // Font sizes
 object FontSize {
     val ExtraSmall = 10.sp
@@ -101,4 +102,8 @@ object Elevation {
     val Small = 4.dp
     val Medium = 8.dp
     val Large = 16.dp
+}
+
+object BottomNavigationSize{
+    val Height = 40.dp
 }

@@ -24,4 +24,10 @@
     <string name="producer">Producer :</string>
     <string name="close">Close</string>
     <string name="search">Search</string>
+    <string name="home">Home</string>
+    <string name="ticket">Ticket</string>
+    <string name="spacing">"   |   "</string>
+    <string name="buy_tickets">Buy Ticket</string>
+    <string name="wallet">Wallet</string>
+    <string name="select_seat">Select Seats</string>
 </resources>
