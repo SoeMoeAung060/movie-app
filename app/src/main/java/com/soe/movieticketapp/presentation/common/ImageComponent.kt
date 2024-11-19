@@ -161,6 +161,7 @@ fun SmallCardMovieImage(
 
 
 
+
 @Composable
 fun ExtraSmallCardMovieImage(
     modifier: Modifier = Modifier,
@@ -190,6 +191,30 @@ fun ExtraSmallCardMovieImage(
                 .align(Alignment.TopEnd)
                 .background(color),
             rating = rating
+        )
+    }
+}
+
+
+@Composable
+fun CheckoutMovieImage(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    context: Context,
+    contextDescription : String,
+
+) {
+    Box(){
+        MovieAsyncImage(
+            modifier = modifier
+                .width(CardSize.ExtraSmallWidth)
+                .height(CardSize.ExtraSmallHeight)
+                .clip(RoundedCornerShape(BorderRadius.Medium))
+                .background(MaterialTheme.colorScheme.background),
+            imageUrl = imageUrl,
+            contentDescription = contextDescription,
+            context = context,
+            placeholder = R.drawable.small_poster_placeholder
         )
     }
 }

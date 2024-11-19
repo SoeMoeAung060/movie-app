@@ -1,0 +1,410 @@
+package com.soe.movieticketapp.presentation.otherScreen.checkoutScreen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.soe.movieticketapp.R
+import com.soe.movieticketapp.domain.model.Detail
+import com.soe.movieticketapp.domain.model.Genre
+import com.soe.movieticketapp.domain.model.Movie
+import com.soe.movieticketapp.presentation.common.CheckoutMovieImage
+import com.soe.movieticketapp.presentation.common.RatingBar
+import com.soe.movieticketapp.presentation.common.RatingText
+import com.soe.movieticketapp.presentation.common.SmallCardMovieImage
+import com.soe.movieticketapp.presentation.common.TitleText
+import com.soe.movieticketapp.presentation.common.TopBarWithPopUpScreen
+import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
+import com.soe.movieticketapp.util.FontSize
+import com.soe.movieticketapp.util.MovieType
+import com.soe.movieticketapp.util.Padding
+import com.soe.movieticketapp.util.Spacing
+import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
+
+
+@Composable
+fun CheckoutScreen(
+    modifier: Modifier = Modifier,
+    date: String,
+    time: String,
+    seats: String,
+    price: String,
+    movie: Movie,
+    movieType: MovieType,
+    popUp:() -> Unit,
+    viewModel: CheckOutScreenViewModel = hiltViewModel()
+    ) {
+
+    val getDetailMovie = viewModel.getDetailMovie.value
+
+    LaunchedEffect(true) {
+        viewModel.getDetailMovies(movieId = movie.id, movieType = movieType)
+    }
+
+    if (getDetailMovie != null) {
+        CheckoutScreenContent(
+            modifier = modifier,
+            date = date,
+            time = time,
+            seats = seats,
+            price = price,
+            movie = movie,
+            detail = getDetailMovie,
+            popUp = popUp
+        )
+    }
+}
+
+
+@Composable
+fun CheckoutScreenContent(
+    date: String,
+    time: String,
+    seats: String,
+    price: String,
+    modifier: Modifier = Modifier,
+    movie: Movie,
+    detail: Detail,
+    popUp:() -> Unit
+) {
+
+
+
+    val context = LocalContext.current
+
+    val seatCount = seats.split(",").size
+    val tax = 3
+    val totalTax = seatCount * tax
+
+
+
+    Scaffold(
+        topBar = {
+            TopBarWithPopUpScreen(
+                onBackClick = popUp,
+                text = stringResource(R.string.checkout)
+            )
+        }
+    ) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = it.calculateTopPadding()),
+        ){
+            Box(
+                modifier = modifier
+                    .width(350.dp)
+                    .height(500.dp)
+                    .padding(Padding.Medium)
+                    .clip(RoundedCornerShape(Padding.Medium))
+                    .background(colorResource(R.color.DarkBlue))
+                    .align(Alignment.Center),
+            ){
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .align(Alignment.TopStart),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    //Movie Details
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.Top
+                    ){
+                        CheckoutMovieImage(
+                            imageUrl = "${BASE_POSTER_IMAGE_URL}${movie.posterPath}",
+                            context = context,
+                            contextDescription = "Movie Poster",
+                        )
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = Padding.Medium),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            TitleText(
+                                modifier = Modifier.padding(bottom = Padding.Small),
+                                text = movie.title ?: "",
+                                fontSize = FontSize.Large,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                            )
+
+                            TitleText(
+                                modifier = Modifier.padding(bottom = Padding.Small),
+                                text = detail.genres!!.joinToString(", ") {genre -> genre.name },
+                                fontSize = FontSize.Medium,
+                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = Padding.Small),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                RatingBar(
+                                    modifier = Modifier.padding(),
+                                    rating = (movie.voteAverage?.div(2)),
+                                    starsColor = Color.Yellow
+                                )
+
+                                RatingText(
+                                    modifier = Modifier.padding(),
+                                    rating = movie.voteAverage,
+                                    color = Color.Yellow
+                                )
+                            }
+
+                        }
+                    }
+
+
+                    //Date , Time, Studio and Seat
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Padding.Medium),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        CheckoutContent(
+                            text = stringResource(R.string.date),
+                            checkoutText = date
+                        )
+
+                        CheckoutContent(
+                            text = stringResource(R.string.time),
+                            checkoutText = time
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Padding.Medium),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        CheckoutContent(
+                            text = stringResource(R.string.studio),
+                            checkoutText = stringResource(R.string.studio_name),
+                        )
+
+                        CheckoutContent(
+                            text = stringResource(R.string.seat),
+                            checkoutText = seats
+                        )
+                    }
+
+
+                    Spacer(Modifier.height(Spacing.Medium))
+
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)))
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Padding.Medium),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        TitleText(
+                            text = "$seatCount ${stringResource(R.string.ticket)}",
+                            fontSize = FontSize.Medium,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                        )
+
+                        TitleText(
+                            text = "$$price",
+                            fontSize = FontSize.Medium,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Padding.Medium),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        TitleText(
+                            text = stringResource(R.string.tax),
+                            fontSize = FontSize.Medium,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                        )
+
+                        TitleText(
+                            text = "$${seatCount * tax}",
+                            fontSize = FontSize.Medium,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+                    Spacer(Modifier.height(Spacing.Medium))
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)))
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Padding.Medium),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        TitleText(
+                            text = stringResource(R.string.total),
+                            fontSize = FontSize.Medium,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+
+                        TitleText(
+                            text = "${price.toInt() + totalTax}",
+                            fontSize = FontSize.Medium,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+@Composable
+fun CheckoutContent(
+    modifier: Modifier = Modifier,
+    text : String,
+    checkoutText : String
+    ) {
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = if (text == "Time" || text == "Seat")Alignment.End else Alignment.Start,
+        verticalArrangement = Arrangement.Top
+    ) {
+        TitleText(
+            text = text,
+            fontSize = FontSize.Medium,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+
+        )
+
+        TitleText(
+            text = checkoutText,
+            fontSize = FontSize.Medium,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+            color = MaterialTheme.colorScheme.onBackground
+
+        )
+    }
+    
+}
+
+
+@Preview
+@Composable
+private fun CheckoutScreenPreview() {
+    MovieTicketAppTheme {
+        CheckoutScreenContent(
+            date = "2023-11-20",
+            time = "10:00 AM",
+            seats = "A1, B2",
+            price = "100",
+            movie = Movie(
+                adult = false,
+                backdropPath = "/path/to/backdrop2.jpg",
+                posterPath = "/path/to/poster2.jpg",
+                genreIds = listOf(16, 35),
+                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+                mediaType = "movie",
+                firstAirDate = "2023-02-02",
+                id = 2,
+                imdbId = "tt7654321",
+                originalLanguage = "en",
+                originalName = "Original Name 2",
+                overview = "This is the overview of the second movie.",
+                popularity = 9.0,
+                releaseDate = "2023-02-02",
+                runtime = 90,
+                title = "Movie Title 2",
+                video = true,
+                voteAverage = 8.0,
+                voteCount = 200
+            ),
+            detail = Detail(
+                posterPath = "/path/to/poster2.jpg",
+                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+                id = 2,
+                imdbId = "tt7654321",
+                originalLanguage = "en",
+                overview = "This is the overview of the second movie.",
+                popularity = 9.0,
+                releaseDate = "2023-02-02",
+                runtime = 90,
+                title = "Movie Title 2",
+                video = true,
+                voteAverage = 8.0,
+                voteCount = 200,
+                budget = 1000000,
+                homepage = "https://www.example.com",
+                originalTitle = "Original Title 2",
+                revenue = 2000000,
+                tagline = "Tagline 2",
+                status = "Released"
+            ),
+            popUp = {}
+        )
+    }
+    
+}

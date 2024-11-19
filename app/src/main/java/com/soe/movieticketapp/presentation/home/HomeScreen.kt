@@ -107,7 +107,7 @@ fun HomeScreen(
                                 headerText = stringResource(R.string.now_playing)
                             )
 
-                            Spacer(Modifier.height(Padding.Medium))
+                            Spacer(Modifier.height(Padding.Large))
 
                             NowPlayingMovie(
                                 movies = nowPlayingState,

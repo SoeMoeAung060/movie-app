@@ -41,7 +41,7 @@ fun DetailScreenUi(
     navigateToCastAndCrewScreen: (Movie) -> Unit,
     onClickTrailer: (Int?)->Unit,
     detailScreenViewModel: DetailScreenViewModel = hiltViewModel(),
-    onClickBuyTicket: () -> Unit
+    onClickBuyTicket: (Movie) -> Unit
 ) {
 
     val similarMovies = detailScreenViewModel.similarMoviesAndTvSeries.collectAsLazyPagingItems()
@@ -58,7 +58,7 @@ fun DetailScreenUi(
                 MovieBackdropAndPoster(
                     movie = movie,
                     onClickTrailer = onClickTrailer,
-                    onClickBuyTicket = onClickBuyTicket
+                    onClickBuyTicket = { onClickBuyTicket(movie) },
                 )
             }
 

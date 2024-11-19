@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.soe.movieticketapp.R
-import com.soe.movieticketapp.presentation.otherScreen.seatScreen.MovieTicketViewModel
 import com.soe.movieticketapp.util.TopBarHeaderTitle
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 
@@ -23,10 +22,8 @@ import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 @Composable
 fun WalletScreen(
     modifier: Modifier = Modifier,
-    viewModel: MovieTicketViewModel = hiltViewModel(),
 ) {
 
-    val nowPlayingState = viewModel.nowPlayingState.value.collectAsLazyPagingItems()
 
 
     Scaffold(

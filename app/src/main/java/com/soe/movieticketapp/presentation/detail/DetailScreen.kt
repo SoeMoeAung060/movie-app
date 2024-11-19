@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Crew
+import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.presentation.common.BuyTicketButton
@@ -48,7 +49,7 @@ fun DetailScreen(
     movie: Movie,
     navigateToDetailScreen: (Movie) -> Unit,
     navigateToCastAndCrewScreen: (Movie) -> Unit,
-    navigateToSeatScreen: () -> Unit
+    navigateToSeatScreen: (Movie) -> Unit
 ) {
 
 
@@ -101,7 +102,7 @@ fun DetailScreen(
                         Log.d("DetailScreen", "No trailer found.") // Log if no trailer is found
                     }
                 },
-                onClickBuyTicket = navigateToSeatScreen
+                onClickBuyTicket = { navigateToSeatScreen(movie) }
             )
         }
 

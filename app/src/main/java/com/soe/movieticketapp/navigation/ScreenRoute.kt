@@ -11,5 +11,6 @@ sealed class ScreenRoute(val route: String) {
     data object TopLevelScreenRoute : ScreenRoute("top_level_screen_route")
 
     data object SeatScreen : ScreenRoute("movie_seat_screen")
+    data object CheckoutScreen : ScreenRoute("checkout_screen?date={date}&time={time}&seats={seats}&price={price}")
 
 }

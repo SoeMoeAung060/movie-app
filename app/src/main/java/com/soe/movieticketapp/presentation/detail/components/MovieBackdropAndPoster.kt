@@ -38,7 +38,7 @@ fun MovieBackdropAndPoster(
     modifier: Modifier = Modifier,
     movie: Movie,
     onClickTrailer:(Int?)->Unit,
-    onClickBuyTicket: () -> Unit
+    onClickBuyTicket: (Movie) -> Unit
 ) {
     Box(
 
@@ -100,6 +100,8 @@ fun MovieBackdropAndPoster(
         ){
             BuyTicketButton(
                 onClick = onClickBuyTicket,
+                text = "Buy Ticket",
+                movie = movie
             )
         }
 

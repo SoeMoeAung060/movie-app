@@ -18,7 +18,8 @@ import java.util.*
 
 @Composable
 fun DateSelector(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDateSelected: (String) -> Unit
 ) {
     // Get today's date
     val today = SimpleDateFormat("MMMM dd, EEEE", Locale.getDefault()).format(Date())
@@ -38,7 +39,9 @@ fun DateSelector(
                 val calendarSelected = Calendar.getInstance()
                 calendarSelected.set(year, month, dayOfMonth)
                 val format = SimpleDateFormat("MMMM dd, EEEE", Locale.getDefault())
-                selectedDate = "Date: ${format.format(calendarSelected.time)}"
+                selectedDate = format.format(calendarSelected.time)
+
+                onDateSelected(selectedDate)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -51,7 +54,7 @@ fun DateSelector(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(Padding.Medium),
+            .padding(Padding.Large),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -80,6 +83,8 @@ fun DateSelector(
 @Composable
 fun DateSelectorPreview() {
     MaterialTheme {
-        DateSelector()
+        DateSelector(
+            onDateSelected = {}
+        )
     }
 }

@@ -145,57 +145,58 @@ fun MovieDetails(
 
 }
 
-//
-//@Preview
-//@Composable
-//private fun MovieDetailsPreview() {
-//    MovieTicketAppTheme {
-//        MovieDetails(
-//            movie = Movie(
-//                adult = false,
-//                backdropPath = "/path/to/backdrop2.jpg",
-//                posterPath = "/path/to/poster2.jpg",
-//                genreIds = listOf(16, 35),
-//                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
-//                mediaType = "movie",
-//                firstAirDate = "2023-02-02",
-//                id = 2,
-//                imdbId = "tt7654321",
-//                originalLanguage = "en",
-//                originalName = "Original Name 2",
-//                overview = "This is the overview of the second movie.",
-//                popularity = 9.0,
-//                releaseDate = "2023-02-02",
-//                runtime = 90,
-//                title = "Movie Title 2",
-//                video = true,
-//                voteAverage = 8.0,
-//                voteCount = 200
-//            ),
-//            detail = Detail(
-//                posterPath = "/path/to/poster2.jpg",
-//                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
-//                id = 2,
-//                imdbId = "tt7654321",
-//                originalLanguage = "en",
-//                overview = "This is the overview of the second movie.",
-//                popularity = 9.0,
-//                releaseDate = "2023-02-02",
-//                runtime = 90,
-//                title = "Movie Title 2",
-//                video = true,
-//                voteAverage = 8.0,
-//                voteCount = 200,
-//                budget = 1000000,
-//                homepage = "https://www.example.com",
-//                originalTitle = "Original Title 2",
-//                revenue = 2000000,
-//                tagline = "Tagline 2",
-//                status = "Released"
-//            ),
-//            modifier = Modifier
-//
-//        )
-//    }
-//
-//}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+private fun MovieDetailsPreview() {
+    MovieTicketAppTheme {
+        MovieDetails(
+            movie = Movie(
+                adult = false,
+                backdropPath = "/path/to/backdrop2.jpg",
+                posterPath = "/path/to/poster2.jpg",
+                genreIds = listOf(16, 35),
+                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+                mediaType = "movie",
+                firstAirDate = "2023-02-02",
+                id = 2,
+                imdbId = "tt7654321",
+                originalLanguage = "en",
+                originalName = "Original Name 2",
+                overview = "This is the overview of the second movie.",
+                popularity = 9.0,
+                releaseDate = "2023-02-02",
+                runtime = 90,
+                title = "Movie Title 2",
+                video = true,
+                voteAverage = 8.0,
+                voteCount = 200
+            ),
+            detail = Detail(
+                posterPath = "/path/to/poster2.jpg",
+                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+                id = 2,
+                imdbId = "tt7654321",
+                originalLanguage = "en",
+                overview = "This is the overview of the second movie.",
+                popularity = 9.0,
+                releaseDate = "2023-02-02",
+                runtime = 90,
+                title = "Movie Title 2",
+                video = true,
+                voteAverage = 8.0,
+                voteCount = 200,
+                budget = 1000000,
+                homepage = "https://www.example.com",
+                originalTitle = "Original Title 2",
+                revenue = 2000000,
+                tagline = "Tagline 2",
+                status = "Released"
+            ),
+            modifier = Modifier
+
+        )
+    }
+
+}

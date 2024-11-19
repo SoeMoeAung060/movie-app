@@ -30,4 +30,13 @@
     <string name="buy_tickets">Buy Ticket</string>
     <string name="wallet">Wallet</string>
     <string name="select_seat">Select Seats</string>
+    <string name="screen">Screen</string>
+    <string name="seat">Seat</string>
+    <string name="checkout">Checkout</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="studio">Studio</string>
+    <string name="studio_name">Regular 2D</string>
+    <string name="tax">Tax (3%)</string>
+    <string name="total">Total</string>
 </resources>

@@ -77,7 +77,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.androidx.constraintlayout.compose.v110)
+    implementation(libs.androidx.constraintlayout)
 
     //Others -------------------------------------------------------------
 
@@ -104,7 +104,6 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.androidx.room.paging)
 
-//    implementation(libs.newsapi)
     implementation (libs.okhttp)
     implementation (libs.okhttp.logging.interceptor)
 
@@ -128,17 +127,15 @@ dependencies {
     //Timber
 //    implementation (libs.timber)
 
-
     //Exoplayer
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.ui)
 
-
-
     //Compose Destination
     implementation(libs.core)
     ksp (libs.ksp)
+
 
 
 }

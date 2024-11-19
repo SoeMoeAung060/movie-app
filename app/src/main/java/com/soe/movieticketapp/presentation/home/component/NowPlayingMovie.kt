@@ -58,7 +58,7 @@ fun NowPlayingMovie(
 ) {
 
     val statePager = rememberPagerState(
-        initialPage = 0,
+        initialPage = 1,
         pageCount = { movies.itemCount }
     )
 
@@ -69,7 +69,7 @@ fun NowPlayingMovie(
         HorizontalPager(
             state = statePager,
             modifier = modifier,
-            contentPadding = PaddingValues(horizontal = 70.dp),
+            contentPadding = PaddingValues(horizontal = 100.dp),
             pageSpacing = Padding.Medium,
             verticalAlignment = Alignment.CenterVertically
         ) { index ->
@@ -95,26 +95,9 @@ fun MovieTicketCard(
     index: Int,
     onClick: (Movie) -> Unit) {
 
-    val duration = movie.runtime?.let { duration ->
-        "${duration.div(60)}h ${duration.rem(60)}m"
-    } ?: "Duration not available"
-
-    val genresName = movie.genres?.joinToString(", ") { it.name }
 
     val pagerOffset = (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
 
-    // Smoothly animate the Z rotation and scale
-//    val rotationZ by animateFloatAsState(
-//        targetValue = if (pagerOffset != 0f) {
-//            lerp(
-//                start = -3f, // Rotate left side cards -15 degrees
-//                stop = 3f,   // Rotate right side cards 15 degrees
-//                fraction = pagerOffset.coerceIn(-1f, 1f)
-//            )
-//        } else 0f, // Keep the middle card flat
-//        animationSpec = tween(durationMillis = 300), // Smooth animation duration
-//        label = "RotationZAnimation"
-//    )
 
     val scale by animateFloatAsState(
         targetValue = lerp(
@@ -170,7 +153,7 @@ fun MovieTicketCard(
             )
 
             TitleText(
-                text = "Language - ${movie.originalLanguage?.uppercase()}",
+                text = "${movie.originalLanguage?.uppercase()}",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal)
 
             )
