@@ -14,8 +14,12 @@ fun RootNavGraph(
     NavHost(
         modifier = Modifier,
         navController = movieNavController.navController,
-        startDestination = ScreenRoute.TopLevelScreenRoute.route,
+        startDestination = ScreenRoute.AuthRoute.route,
     ){
+
+        authNestedGraph(movieNavController)
+
+
         composable(route = ScreenRoute.TopLevelScreenRoute.route){
             TopLevelScreenGraph()
         }

@@ -40,4 +40,5 @@
     <string name="studio_name">Regular 2D</string>
     <string name="tax">Tax (3%)</string>
     <string name="total">Total</string>
+    <string name="splash_screen_text">Find and book your favorite movie!</string>
 </resources>
