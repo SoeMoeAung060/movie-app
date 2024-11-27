@@ -1,6 +1,7 @@
 package com.soe.movieticketapp.navigation
 
 import android.util.Log
+import androidx.core.os.trace
 import androidx.navigation.NavHostController
 import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Movie
@@ -12,6 +13,8 @@ class MovieNavController(
     fun popUp(){
         navController.popBackStack()
     }
+
+
 
     fun navigate(route : String){
         navController.navigate(route){
@@ -66,6 +69,7 @@ class MovieNavController(
             route = ScreenRoute.SeatScreen.route
         )
     }
+
     fun navigateToCheckoutScreen(
         date : String,
         time : String,
@@ -86,6 +90,8 @@ class MovieNavController(
                 .replace("{price}", price)
         )
     }
+
+
 
 
 

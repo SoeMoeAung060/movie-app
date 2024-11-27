@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.gson.Gson
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.presentation.common.BottomNavigationBar
@@ -35,6 +36,7 @@ import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.CheckoutSc
 import com.soe.movieticketapp.presentation.otherScreen.movieListScreen.MovieListScreen
 import com.soe.movieticketapp.presentation.otherScreen.searchSrceen.SearchScreen
 import com.soe.movieticketapp.presentation.otherScreen.seatScreen.SeatScreen
+import com.soe.movieticketapp.presentation.otherScreen.ticketScreen.TicketScreen
 import com.soe.movieticketapp.presentation.wallet.WalletScreen
 import com.soe.movieticketapp.util.MovieType
 import com.soe.movieticketapp.util.getSeatName
@@ -218,6 +220,7 @@ fun TopLevelScreenGraph(
                 val movie = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("movie")
 
 
+
                 Log.d("CheckoutScreen", "Retrieved movie: ${movie?.title ?: "Movie data is missing"}")
 
 
@@ -230,12 +233,50 @@ fun TopLevelScreenGraph(
                         movie = it,
                         movieType = MovieType.MOVIE,
                         popUp = { movieNavController.popUp() },
+                        movieNavController = movieNavController
                     )
                 }?: run {
                     // Handle null movie case
                     Text(text = "Error: Movie data is missing")
                 }
 
+            }
+
+            composable(
+                route = ScreenRoute.TicketScreen.route,
+                arguments = listOf(
+                    navArgument("date") { type = NavType.StringType },
+                    navArgument("time") { type = NavType.StringType },
+                    navArgument("seats") { type = NavType.StringType },
+                    navArgument("price") { type = NavType.StringType }
+
+                )) { backStackEntry ->
+
+
+                val date = backStackEntry.arguments?.getString("date") ?: "Unknown Date"
+                val time = backStackEntry.arguments?.getString("time") ?: "Unknown Time"
+                val seats = URLDecoder.decode(backStackEntry.arguments?.getString("seats") ?: "", "UTF-8")
+                val price = backStackEntry.arguments?.getString("price") ?: "Unknown Price"
+                val movieJson = backStackEntry.arguments?.getString("movie") ?: ""
+
+                // Deserialize the movie object
+                val movie = parseMovieFromJson(movieJson)
+
+                Log.d("TicketScreen", "Retrieved movie: ${movie?.title ?: "Movie data is missing"}")
+
+                TicketScreen(
+                    date = date,
+                    time = time,
+                    seats = seats,
+                    movie = movie,
+                    movieType = MovieType.MOVIE,
+                    popUp = {
+                        navController.navigate(ScreenRoute.HomeScreen.route) {
+                        popUpTo(ScreenRoute.HomeScreen.route) {
+                            inclusive = true
+                        }
+                    } },
+                )
             }
 
 
@@ -286,4 +327,13 @@ private fun navigationToTop(navController: NavController, route: String) {
     }
 }
 
+
+
+fun serializeMovieToJson(movie: Movie): String {
+    return Gson().toJson(movie)
+}
+
+fun parseMovieFromJson(json: String): Movie {
+    return Gson().fromJson(json, Movie::class.java)
+}
 

@@ -1,5 +1,7 @@
-package com.soe.movieticketapp.presentation.otherScreen.checkoutScreen
+package com.soe.movieticketapp.presentation.otherScreen.ticketScreen
 
+import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,44 +13,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
-import com.soe.movieticketapp.navigation.MovieNavController
-import com.soe.movieticketapp.navigation.ScreenRoute
-import com.soe.movieticketapp.presentation.common.BuyTicketButton
+import com.soe.movieticketapp.presentation.common.BodyText
 import com.soe.movieticketapp.presentation.common.CheckoutMovieImage
 import com.soe.movieticketapp.presentation.common.RatingBar
 import com.soe.movieticketapp.presentation.common.RatingText
-import com.soe.movieticketapp.presentation.common.SmallCardMovieImage
 import com.soe.movieticketapp.presentation.common.TitleText
 import com.soe.movieticketapp.presentation.common.TopBarWithPopUpScreen
-import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.component.CheckoutButton
+import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.CheckOutScreenViewModel
 import com.soe.movieticketapp.stripePayment.StripePayment
 import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
 import com.soe.movieticketapp.util.FontSize
@@ -58,19 +54,19 @@ import com.soe.movieticketapp.util.Spacing
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 
 
+
+
 @Composable
-fun CheckoutScreen(
+fun TicketScreen(
     modifier: Modifier = Modifier,
     date: String,
     time: String,
     seats: String,
-    price: String,
     movie: Movie,
     movieType: MovieType,
     popUp:() -> Unit,
-    viewModel: CheckOutScreenViewModel = hiltViewModel(),
-    movieNavController: MovieNavController
-    ) {
+    viewModel: TicketScreenViewModel = hiltViewModel()
+) {
 
     val getDetailMovie = viewModel.getDetailMovie.value
 
@@ -79,47 +75,36 @@ fun CheckoutScreen(
     }
 
     if (getDetailMovie != null) {
-        CheckoutScreenContent(
+        TicketScreenContent(
             modifier = modifier,
             date = date,
             time = time,
             seats = seats,
-            price = price,
             movie = movie,
             detail = getDetailMovie,
-            popUp = popUp,
-            movieNavController = movieNavController
+            popUp = popUp
         )
     }
 }
 
 
 @Composable
-fun CheckoutScreenContent(
+fun TicketScreenContent(
     date: String,
     time: String,
     seats: String,
-    price: String,
     modifier: Modifier = Modifier,
     movie: Movie,
     detail: Detail,
-    popUp:() -> Unit,
-    movieNavController: MovieNavController
+    popUp:() -> Unit
 ) {
 
-
-
     val context = LocalContext.current
-
-    val seatCount = seats.split(",").size
-    val tax = 3
-    val totalTax = seatCount * tax
-    val totalAmount = price.toInt() + totalTax
 
 
     Scaffold(
         topBar = {
-            TopBarWithPopUpScreen(
+            TicketTopBar(
                 onBackClick = popUp,
                 text = stringResource(R.string.checkout)
             )
@@ -161,7 +146,7 @@ fun CheckoutScreenContent(
                             verticalAlignment = Alignment.Top
                         ){
                             CheckoutMovieImage(
-                                imageUrl = "${BASE_POSTER_IMAGE_URL}${movie.posterPath}",
+                                imageUrl = "$BASE_POSTER_IMAGE_URL${movie.posterPath}",
                                 context = context,
                                 contextDescription = "Movie Poster",
                             )
@@ -210,143 +195,132 @@ fun CheckoutScreenContent(
                             }
                         }
 
-
-                        //Date , Time, Studio and Seat
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = Padding.Medium),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            CheckoutContent(
-                                text = stringResource(R.string.date),
-                                checkoutText = date
-                            )
-
-                            CheckoutContent(
-                                text = stringResource(R.string.time),
-                                checkoutText = time
-                            )
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = Padding.Medium),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            CheckoutContent(
-                                text = stringResource(R.string.studio),
-                                checkoutText = stringResource(R.string.studio_name),
-                            )
-
-                            CheckoutContent(
-                                text = stringResource(R.string.seat),
-                                checkoutText = seats
-                            )
-                        }
-
-
                         Spacer(Modifier.height(Spacing.Medium))
 
-
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)))
-
-
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = Padding.Medium),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            TitleText(
-                                text = if(seatCount == 1) "1 ${stringResource(R.string.ticket)}" else "$seatCount ${stringResource(R.string.tickets)}",
-                                fontSize = FontSize.Medium,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(top = 2.dp, end = Padding.Small),
+                                painter = painterResource(R.drawable.info_circle),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                             )
-
-                            TitleText(
-                                text = "$$price",
-                                fontSize = FontSize.Medium,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = Padding.Medium),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            TitleText(
-                                text = stringResource(R.string.tax),
-                                fontSize = FontSize.Medium,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                            )
-
-                            TitleText(
-                                text = "$${seatCount * tax}",
-                                fontSize = FontSize.Medium,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.onBackground
+                            BodyText(
+                                text = stringResource(R.string.alart),
+                                fontSize = FontSize.SemiMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                             )
                         }
 
                         Spacer(Modifier.height(Spacing.Medium))
 
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)))
-
-
-                        Row(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = Padding.Medium),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                                .height(300.dp)
                         ){
-                            TitleText(
-                                text = stringResource(R.string.total),
-                                fontSize = FontSize.Large,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onBackground
+                            Box(
+                                modifier = Modifier
+                                .fillMaxWidth()
+                                .height(14.dp)
+                                .clip(CircleShape)
+                                .background(brush = Brush.verticalGradient(
+                                    0.0f to MaterialTheme.colorScheme.background.copy(alpha = 0.3f),
+                                    1f to MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
+                                    startY = 0.0f,
+                                    endY = 50.0f
+                                ))
                             )
 
-                            TitleText(
-                                text = "$$totalAmount",
-                                fontSize = FontSize.Large,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                                    .padding(Padding.Small)
+                                    .align(Alignment.TopCenter)
+                                    .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
+                                    .background(Color(0xFF153E64)),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                            ){
+                                //Date , Time, Studio and Seat
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(Padding.Medium),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    TicketContent(
+                                        text = stringResource(R.string.date),
+                                        checkoutText = date
+                                    )
+
+                                    TicketContent(
+                                        text = stringResource(R.string.time),
+                                        checkoutText = time
+                                    )
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = Padding.Medium),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    TicketContent(
+                                        text = stringResource(R.string.studio),
+                                        checkoutText = stringResource(R.string.studio_name),
+                                    )
+
+                                    TicketContent(
+                                        text = stringResource(R.string.seat),
+                                        checkoutText = seats
+                                    )
+                                }
+
+//
+                                Spacer(Modifier.height(Spacing.Medium))
+//
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(1.dp)
+                                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f))
+                                )
+//
+//                                Spacer(Modifier.height(Spacing.Small))
+
+                                Column(
+                                    modifier = Modifier.weight(0.2f),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ){
+                                    Image(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(50.dp),
+                                        painter = painterResource(R.drawable.barcode),
+                                        contentDescription = null
+                                    )
+                                }
+
+
+                            }
+
+
+
                         }
+
 
                     }
                 }
             }
 
-
-            StripePayment(
-                totalAmount,
-                movieNavController = movieNavController,
-                date = date,
-                time = time,
-                seats = seats,
-                price = price,
-                movie = movie
-            )
         }
     }
 
@@ -354,15 +328,15 @@ fun CheckoutScreenContent(
 
 
 @Composable
-fun CheckoutContent(
+fun TicketContent(
     modifier: Modifier = Modifier,
     text : String,
-    checkoutText : String,
-    ) {
+    checkoutText : String
+) {
 
     Column(
         modifier = modifier,
-        horizontalAlignment = if (text == "Time" || text == "Seat")Alignment.End else Alignment.Start,
+        horizontalAlignment = if (text == "Time" || text == "Seat") Alignment.End else Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
         TitleText(
@@ -381,23 +355,18 @@ fun CheckoutContent(
 
         )
     }
-    
+
 }
 
 
-@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES )
 @Composable
 private fun CheckoutScreenPreview() {
-
-    val navController = rememberNavController()
-    val movieNavController = MovieNavController(navController)
-
     MovieTicketAppTheme {
-        CheckoutScreenContent(
+        TicketScreenContent(
             date = "2023-11-20",
             time = "10:00 AM",
             seats = "A1, B2",
-            price = "100",
             movie = Movie(
                 adult = false,
                 backdropPath = "/path/to/backdrop2.jpg",
@@ -440,9 +409,8 @@ private fun CheckoutScreenPreview() {
                 tagline = "Tagline 2",
                 status = "Released"
             ),
-            popUp = {},
-            movieNavController = movieNavController
+            popUp = {}
         )
     }
-    
+
 }

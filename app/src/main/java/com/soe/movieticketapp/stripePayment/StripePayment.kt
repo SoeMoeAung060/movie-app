@@ -1,6 +1,7 @@
 package com.soe.movieticketapp.stripePayment
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,9 +11,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.json.responseJson
 import com.github.kittinunf.result.Result
+import com.google.gson.Gson
+import com.soe.movieticketapp.domain.model.Movie
+import com.soe.movieticketapp.navigation.MovieNavController
+import com.soe.movieticketapp.navigation.ScreenRoute
 import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.component.CheckoutButton
 import com.soe.movieticketapp.util.BACKEND_URL_ENDPOINT
 import com.stripe.android.PaymentConfiguration
@@ -20,12 +26,31 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import org.json.JSONObject
+import java.net.URLEncoder
 
 @Composable
 fun StripePayment(
     totalAmount : Int,
+    movieNavController: MovieNavController,
+    date: String,
+    time: String,
+    seats: String,
+    price: String,
+    movie: Movie
 ) {
-    val paymentSheet = rememberPaymentSheet(::onPaymentSheetResult)
+
+
+    val paymentSheet = rememberPaymentSheet{ paymentSheetResult ->
+        onPaymentSheetResult(
+            paymentSheetResult = paymentSheetResult,
+            navController = movieNavController,
+            date = date,
+            time = time,
+            seats = seats,
+            price = price,
+            movie = movie
+        )
+    }
     val context = LocalContext.current
     var customerConfig by remember { mutableStateOf<PaymentSheet.CustomerConfiguration?>(null) }
     var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
@@ -38,7 +63,7 @@ fun StripePayment(
         BACKEND_URL_ENDPOINT.httpPost()
             .body(payload.toString())
             .header("Content-Type" to "application/json")
-            .responseJson { request, response, result ->
+            .responseJson { request, _, result ->
                 Log.d("StripePayment", "Request sent: ${request.body}")
                 when (result) {
                     is Result.Success -> {
@@ -85,17 +110,32 @@ fun StripePayment(
 }
 
 
-private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-    when(paymentSheetResult) {
+private fun onPaymentSheetResult(
+    paymentSheetResult: PaymentSheetResult,
+    navController: MovieNavController,
+    date: String,
+    time: String,
+    seats: String,
+    price: String,
+    movie: Movie
+) {
+
+    when (paymentSheetResult) {
         is PaymentSheetResult.Canceled -> {
-            print("Canceled")
+            Log.d("StripePayment", "Payment canceled")
         }
         is PaymentSheetResult.Failed -> {
-            print("Error: ${paymentSheetResult.error}")
+            Log.e("StripePayment", "Payment failed: ${paymentSheetResult.error.localizedMessage}")
         }
         is PaymentSheetResult.Completed -> {
-            // Display for example, an order confirmation screen
-            print("Completed")
+            // Serialize the movie object
+            val movieJson = serializeMovieToJson(movie)
+            Log.d("StripePayment", "Payment completed successfully")
+            navController.navigate("ticket_screen?date=$date&time=$time&seats=${URLEncoder.encode(seats, "UTF-8")}&price=$price&movie=$movieJson")
         }
     }
+}
+
+fun serializeMovieToJson(movie: Movie): String {
+    return Gson().toJson(movie)
 }

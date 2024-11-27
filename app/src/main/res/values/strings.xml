@@ -41,4 +41,5 @@
     <string name="tax">Tax (3%)</string>
     <string name="total">Total</string>
     <string name="splash_screen_text">Find and book your favorite movie!</string>
+    <string name="alart">Don\'t forget to come 10 minutes before the movie starts</string>
 </resources>

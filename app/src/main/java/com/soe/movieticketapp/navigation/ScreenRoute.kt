@@ -1,5 +1,8 @@
 package com.soe.movieticketapp.navigation
 
+import com.google.gson.Gson
+import com.soe.movieticketapp.domain.model.Movie
+
 sealed class ScreenRoute(val route: String) {
 
 
@@ -16,5 +19,8 @@ sealed class ScreenRoute(val route: String) {
 
     data object SeatScreen : ScreenRoute("movie_seat_screen")
     data object CheckoutScreen : ScreenRoute("checkout_screen?date={date}&time={time}&seats={seats}&price={price}")
+    data object TicketScreen : ScreenRoute("ticket_screen?date={date}&time={time}&seats={seats}&price={price}&movie={movie}")
+
 
 }
+
