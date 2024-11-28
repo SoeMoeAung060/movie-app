@@ -41,12 +41,10 @@ fun MovieBackdropAndPoster(
     onClickBuyTicket: (Movie) -> Unit
 ) {
     Box(
-
+        modifier = modifier
     ) {
-
-
         BackDropMovieImage(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             imageUrl = "$BASE_BACKDROP_IMAGE_URL${movie.backdropPath}",
             context = LocalContext.current,
             contextDescription = movie.title ?: "Unknown Title"
@@ -88,7 +86,7 @@ fun MovieBackdropAndPoster(
                     .align(Alignment.Center),
                 painter = painterResource(MovieIcons.playIcon),
                 contentDescription = stringResource(R.string.play_icon),
-                tint = MaterialTheme.colorScheme.onBackground.copy(0.9f)
+                tint = MaterialTheme.colorScheme.onBackground.copy(0.6f),
             )
         }
 

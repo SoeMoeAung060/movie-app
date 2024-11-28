@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -58,16 +59,16 @@ fun DetailScreen(
     val movieType = remember { movieType }
 
 
+
     val getCastMovie = detailViewModel.getCastMovie.value
     val getCrewMovie = detailViewModel.getCrewMovie.value
     val trailerList = detailViewModel.getTrailerMovie.value
     val getDetailMovie = detailViewModel.getDetailMovie.value
 
 
-    LaunchedEffect(true) {
-        detailViewModel.getDetailMovies(movie.id, movieType)
-        detailViewModel.getWatchProvider(movie.id, movieType)
+    LaunchedEffect(movie.id) {
 
+        detailViewModel.getDetailMovies(movie.id, movieType)
         detailViewModel.getCastAndCrew(movie.id, movieType)
         detailViewModel.getSimilarMoviesAndTvSeries(movie.id, movieType)
         detailViewModel.getTrailerMovies(movie.id, movieType)
@@ -105,12 +106,7 @@ fun DetailScreen(
                 onClickBuyTicket = { navigateToSeatScreen(movie) }
             )
         }
-
-
-
     }
-
-
 }
 
 

@@ -2,6 +2,7 @@ package com.soe.movieticketapp.presentation.home
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Movie
+import com.soe.movieticketapp.presentation.common.HeaderMovieText
+import com.soe.movieticketapp.presentation.home.component.Carousel
 import com.soe.movieticketapp.presentation.home.component.GenreSelectContent
 import com.soe.movieticketapp.presentation.home.component.HeaderTextLine
 import com.soe.movieticketapp.presentation.home.component.NowPlayingHeader
@@ -35,6 +38,7 @@ import com.soe.movieticketapp.util.Spacing
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -52,7 +56,9 @@ fun HomeScreen(
     Log.d("HomeScreen", "trendingMovies itemCount: ${trendingContent.itemCount}")
 
     val nowPlayingState = viewModel.nowPlayingState.value.collectAsLazyPagingItems()
-
+    val popularState = viewModel.popularMoviesState.value.collectAsLazyPagingItems()
+    val topRatedState = viewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
+    val upcomingState = viewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
 
 
     // Track loading and error states
@@ -93,15 +99,16 @@ fun HomeScreen(
                     state = listState,
                     modifier = modifier.fillMaxSize(),
                 ) {
-                    item {
-                        GenreSelectContent()
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-                    }
+
 
                     if (trendingContent.itemCount > 0) {
                         item {
 
-                            Spacer(modifier = Modifier.height(Spacing.Medium))
+                            Carousel(
+                                onClick = { navigateToDetailScreen(trendingContent[0]!!) },
+                                movie = trendingContent[0]!!
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.Large))
 
                             NowPlayingHeader(
                                 headerText = stringResource(R.string.now_playing)
@@ -118,11 +125,19 @@ fun HomeScreen(
                             Spacer(Modifier.height(Padding.Medium))
 
 
-//                            Carousel(
-//                                onClick = { navigateToDetailScreen(trendingContent[0]!!) },
-//                                movie = trendingContent[0]!!
-//                            )
-//                            Spacer(modifier = Modifier.height(Spacing.Medium))
+                        }
+
+                        item {
+                            HeaderMovieText(
+                                modifier = modifier.padding(horizontal = Padding.Medium),
+                                text = stringResource(R.string.movie_category),
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.Medium))
+                        }
+
+                        stickyHeader {
+                            GenreSelectContent()
+                            Spacer(modifier = Modifier.height(Spacing.Medium))
                         }
 
                         // Trending Movies
@@ -144,6 +159,68 @@ fun HomeScreen(
                                 onClick = { navigateToDetailScreen(it) }
                             )
                         }
+
+                        // Popular Movies
+                        item {
+                            Spacer(modifier = Modifier.height(Spacing.Small))
+
+                            HeaderTextLine(
+                                modifier = modifier,
+                                headerText = stringResource(R.string.popular),
+                                seeMoreText = stringResource(R.string.see_more),
+                                onClick = { navigateToListScreen() }
+                            )
+
+                            Spacer(modifier = Modifier.height(Spacing.Small))
+
+                            TrendingMovie(
+                                modifier = modifier,
+                                movie = popularState,
+                                onClick = { navigateToDetailScreen(it) }
+                            )
+                        }
+
+                        // Top Rate Movies
+                        item {
+                            Spacer(modifier = Modifier.height(Spacing.Small))
+
+                            HeaderTextLine(
+                                modifier = modifier,
+                                headerText = stringResource(R.string.top_rate),
+                                seeMoreText = stringResource(R.string.see_more),
+                                onClick = { navigateToListScreen() }
+                            )
+
+                            Spacer(modifier = Modifier.height(Spacing.Small))
+
+                            TrendingMovie(
+                                modifier = modifier,
+                                movie = topRatedState,
+                                onClick = { navigateToDetailScreen(it) }
+                            )
+                        }
+
+                        // Upcoming Movies
+                        item {
+                            Spacer(modifier = Modifier.height(Spacing.Small))
+
+                            HeaderTextLine(
+                                modifier = modifier,
+                                headerText = stringResource(R.string.upcoming),
+                                seeMoreText = stringResource(R.string.see_more),
+                                onClick = { navigateToListScreen() }
+                            )
+
+                            Spacer(modifier = Modifier.height(Spacing.Small))
+
+                            TrendingMovie(
+                                modifier = modifier,
+                                movie = upcomingState,
+                                onClick = { navigateToDetailScreen(it) }
+                            )
+                        }
+
+
                     }else{
                         Log.d("HomeScreen", "No TV show found")
                     }

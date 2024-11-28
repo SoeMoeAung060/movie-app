@@ -13,8 +13,11 @@ import com.soe.movieticketapp.data.remote.dto.TrailerResponseDTO
 import com.soe.movieticketapp.data.remote.dto.WatchProviderResponse
 import com.soe.movieticketapp.data.repository.paging.pagingSource.MultiSearchPagingSource
 import com.soe.movieticketapp.data.repository.paging.pagingSource.NowPlayingPagingSource
+import com.soe.movieticketapp.data.repository.paging.pagingSource.PopularPagingSource
 import com.soe.movieticketapp.data.repository.paging.pagingSource.SimilarPagingSource
+import com.soe.movieticketapp.data.repository.paging.pagingSource.TopRatePagingSource
 import com.soe.movieticketapp.data.repository.paging.pagingSource.TrendingPagingSource
+import com.soe.movieticketapp.data.repository.paging.pagingSource.UpcomingPagingSource
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.domain.model.Search
 import com.soe.movieticketapp.domain.repository.MovieRepository
@@ -84,6 +87,42 @@ class MovieRepositoryImpl @Inject constructor(
         ).flow
     }
 
+    override suspend fun getUpcomingMovies(movieType: MovieType): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                UpcomingPagingSource(
+                    movieApi = movieApi,
+                    movieType = movieType
+                )
+            }
+        ).flow
+    }
+
+    override suspend fun getTopRatedMovies(movieType: MovieType): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                TopRatePagingSource(
+                    movieApi = movieApi,
+                    movieType = movieType
+                )
+            }
+        ).flow
+    }
+
+    override suspend fun getPopularMovies(movieType: MovieType): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                PopularPagingSource(
+                    movieApi = movieApi,
+                    movieType = movieType
+                )
+            }
+        ).flow
+    }
+
 
     /** No Paging Source */
 
@@ -113,11 +152,18 @@ class MovieRepositoryImpl @Inject constructor(
             return Resource.Success(response)
 
         } catch (e: CancellationException) {
-            Log.e("GetCastMovies", "Job was cancelled: ${e.message}")
-            throw e // Let the coroutine framework handle cancellation properly
+            // Handle cancellations explicitly
+            Log.d("GetCastMovies", "Coroutine was cancelled for movieId: $movieId")
+            throw e // Propagate cancellation to maintain expected behavior
+        } catch (e: HttpException) {
+            Log.e("GetCastMovies", "HTTP error: ${e.message}")
+            Resource.Error("Network error occurred. Please try again.")
+        } catch (e: IOException) {
+            Log.e("GetCastMovies", "Network error: ${e.message}")
+            Resource.Error("Failed to connect to the server. Please check your connection.")
         } catch (e: Exception) {
-            Log.e("GetCastMovies", "Error fetching cast: ${e.message}")
-            return Resource.Error(message = e.message.toString())
+            Log.e("GetCastMovies", "Unexpected error: ${e.message}")
+            Resource.Error("An unexpected error occurred.")
         }
 
     }

@@ -1,20 +1,29 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.soe.movieticketapp.presentation.otherScreen.castScreen
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,17 +48,21 @@ fun CastAndCrewScreen(
     movie: Movie,
     movieType: MovieType,
     popUp: () -> Unit,
-    detailViewModel: DetailScreenViewModel = hiltViewModel()
+    castAndCrewViewModel: CastAndCrewViewModel = hiltViewModel()
 ) {
 
-    val getCast = detailViewModel.getCastMovie.value
-    val getCrew = detailViewModel.getCrewMovie.value
+    val movie by remember { mutableStateOf(movie) }
+    val movieType = remember { movieType }
+
+    val getCast = castAndCrewViewModel.castState.value
+    val getCrew = castAndCrewViewModel.crewState.value
 
     // Log to check the values
     Log.d("CastAndCrewScreen", "Cast: ${getCast.size}, Crew: ${getCrew.size}")
 
-    LaunchedEffect(key1 = true) {
-        detailViewModel.getCastAndCrew(movie.id, movieType)
+    // Fetch data when the screen is displayed
+    LaunchedEffect(movie.id, movieType) {
+        castAndCrewViewModel.fetchCastAndCrew(movie.id, movieType)
     }
 
     Scaffold(
@@ -79,46 +92,65 @@ fun CastAndCrewScreen(
 
 }
 
-
 @Composable
 fun MovieCastAndCrew(
     modifier: Modifier = Modifier,
     crew: List<Crew>,
     cast: List<Cast>
 ) {
-
-
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-
-
-        LazyVerticalGrid(
-            modifier = modifier.padding(),
-            columns = GridCells.Fixed(4),
-            horizontalArrangement = Arrangement.Center,
-            verticalArrangement = Arrangement.Center
-        ) {
-            items(count = cast.size) { index ->
-                val castIndex = cast[index]
-                Log.d("MovieCastAndCrew", "MovieCast: $castIndex")
-                CastInfo(
-                    modifier = Modifier.padding(Padding.Small),
-                    cast = castIndex)
+        if (cast.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.cast),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(Padding.Small)
+            )
+            LazyVerticalGrid(
+                modifier = Modifier.padding(),
+                columns = GridCells.Fixed(4),
+                horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center
+            ) {
+                items(cast.size) { index ->
+                    CastInfo(
+                        modifier = Modifier.padding(Padding.Small),
+                        cast = cast[index]
+                    )
+                }
             }
+        } else {
+            Text(text = stringResource(R.string.no_cast), style = MaterialTheme.typography.bodyLarge)
+        }
 
-            items(count = crew.size) { index ->
-                val crewIndex = crew[index]
-                Log.d("MovieCastAndCrew", "MovieCrew: $crewIndex")
-                CrewInfo(
-                    modifier = Modifier.padding(Padding.Small),
-                    crew = crewIndex)
+        Spacer(modifier = Modifier.height(Padding.Medium))
+
+        if (crew.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.crew),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(Padding.Small)
+            )
+            LazyVerticalGrid(
+                modifier = Modifier.padding(),
+                columns = GridCells.Fixed(4),
+                horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center
+            ) {
+                items(crew.size) { index ->
+                    CrewInfo(
+                        modifier = Modifier.padding(Padding.Small),
+                        crew = crew[index]
+                    )
+                }
             }
+        } else {
+            Text(text = stringResource(R.string.no_crew), style = MaterialTheme.typography.bodyLarge)
         }
     }
-
 }
 
 

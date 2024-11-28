@@ -18,6 +18,9 @@ interface MovieRepository {
     suspend fun getSimilarMoviesAndTvSeries(movieType: MovieType, movieId: Int): Flow<PagingData<Movie>>
     suspend fun getSearchMovies(query: String): Flow<PagingData<Search>>
     suspend fun getNowPlayingMovies() : Flow<PagingData<Movie>>
+    suspend fun getUpcomingMovies(movieType: MovieType) : Flow<PagingData<Movie>>
+    suspend fun getTopRatedMovies(movieType: MovieType) : Flow<PagingData<Movie>>
+    suspend fun getPopularMovies(movieType: MovieType) : Flow<PagingData<Movie>>
 
     /** Non-paging data */
     suspend fun getCastAndCrewMovies(movieType: MovieType, movieId: Int): Resource<CastResponseDTO>

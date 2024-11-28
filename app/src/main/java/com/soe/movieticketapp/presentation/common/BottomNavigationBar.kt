@@ -37,7 +37,7 @@ fun BottomNavigationBar(
         modifier = Modifier.fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
         tonalElevation = 5.dp,
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
@@ -60,11 +60,11 @@ fun BottomNavigationBar(
 
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.tertiary,
-                    unselectedTextColor = MaterialTheme.colorScheme.tertiary,
-                    indicatorColor = MaterialTheme.colorScheme.background
+                    selectedIconColor = MaterialTheme.colorScheme.onBackground,
+                    selectedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unselectedIconColor = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                    unselectedTextColor = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                    indicatorColor = MaterialTheme.colorScheme.background.copy(0f)
                 )
             )
         }

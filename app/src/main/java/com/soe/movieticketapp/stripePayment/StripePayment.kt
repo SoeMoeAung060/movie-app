@@ -1,5 +1,6 @@
 package com.soe.movieticketapp.stripePayment
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.material3.Button
@@ -39,6 +40,7 @@ fun StripePayment(
     movie: Movie
 ) {
 
+    val context = LocalContext.current
 
     val paymentSheet = rememberPaymentSheet{ paymentSheetResult ->
         onPaymentSheetResult(
@@ -48,10 +50,10 @@ fun StripePayment(
             time = time,
             seats = seats,
             price = price,
-            movie = movie
+            movie = movie,
+            context = context
         )
     }
-    val context = LocalContext.current
     var customerConfig by remember { mutableStateOf<PaymentSheet.CustomerConfiguration?>(null) }
     var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
 
@@ -113,6 +115,7 @@ fun StripePayment(
 private fun onPaymentSheetResult(
     paymentSheetResult: PaymentSheetResult,
     navController: MovieNavController,
+    context : Context,
     date: String,
     time: String,
     seats: String,
@@ -123,13 +126,18 @@ private fun onPaymentSheetResult(
     when (paymentSheetResult) {
         is PaymentSheetResult.Canceled -> {
             Log.d("StripePayment", "Payment canceled")
+            Toast.makeText(context, "Payment canceled", Toast.LENGTH_SHORT).show()
         }
         is PaymentSheetResult.Failed -> {
             Log.e("StripePayment", "Payment failed: ${paymentSheetResult.error.localizedMessage}")
+            Toast.makeText(context, "Payment failed", Toast.LENGTH_SHORT).show()
         }
         is PaymentSheetResult.Completed -> {
+            Toast.makeText(context, "Payment successful!", Toast.LENGTH_SHORT).show()
+
             // Serialize the movie object
             val movieJson = serializeMovieToJson(movie)
+
             Log.d("StripePayment", "Payment completed successfully")
             navController.navigate("ticket_screen?date=$date&time=$time&seats=${URLEncoder.encode(seats, "UTF-8")}&price=$price&movie=$movieJson")
         }

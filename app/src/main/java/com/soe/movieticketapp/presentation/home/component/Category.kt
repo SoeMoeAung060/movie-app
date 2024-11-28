@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +34,7 @@ import com.soe.movieticketapp.util.FontSize
 import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Size
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
+import com.soe.movieticketapp.util.ui.theme.blue06
 
 
 @Composable
@@ -65,7 +69,8 @@ fun GenreSelectContent(
         state = listState,
         modifier = modifier
             .fillMaxWidth()
-            .padding(),
+            .padding()
+            .background(MaterialTheme.colorScheme.background),
     ) {
         items(count = genres.size) { index ->
 //            Timber.tag("Genres TAG").d("Displaying genre: ${genres[it].name}")
@@ -94,7 +99,7 @@ fun GenreChip(
 ) {
 
     val animateChipBackgroundColor by animateColorAsState(
-        targetValue = if (isSelected) Color(0xFF2D333D) else Color(0xFF6F7173).copy(alpha = 0.5F),
+        targetValue = if (isSelected) MaterialTheme.colorScheme.secondary else blue06.copy(alpha = 0.5F),
         animationSpec = tween(
             durationMillis = if (isSelected) 100 else 50,
             delayMillis = 0,
@@ -105,8 +110,11 @@ fun GenreChip(
     Box(
         modifier = modifier
             .padding(horizontal = Padding.Small)
-            .height(Size.IconSizeSmall)
+            .padding(bottom = Padding.Medium)
             .widthIn(min = 60.dp)
+            .height(Size.IconSizeSemiMedium)
+            .clip(CircleShape)
+            .background(animateChipBackgroundColor)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
@@ -114,11 +122,11 @@ fun GenreChip(
     ) {
         Text(
             text = genre,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Light,
+            fontWeight = if (isSelected) FontWeight.Normal else FontWeight.Light,
             fontSize = if(isSelected) FontSize.Large else FontSize.Medium,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.align(Alignment.Center)
+            color = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.align(Alignment.Center).padding(horizontal = Padding.Small)
         )
     }
 
@@ -129,7 +137,10 @@ fun GenreChip(
 @Composable
 private fun GenreSelectorPreview() {
     MovieTicketAppTheme {
-        GenreSelectContent(
+        GenreChip(
+            genre = "Adventure",
+            isSelected = true,
+            onClick = {}
         )
     }
 

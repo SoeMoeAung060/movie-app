@@ -45,6 +45,14 @@ class HomeViewModel @Inject constructor(
     private val _trendingMoviesState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
     val trendingMoviesState: State<Flow<PagingData<Movie>>> = _trendingMoviesState
 
+    private val _popularMoviesState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val popularMoviesState: State<Flow<PagingData<Movie>>> = _popularMoviesState
+
+    private val _topRatedMoviesState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val topRatedMoviesState: State<Flow<PagingData<Movie>>> = _topRatedMoviesState
+
+    private val _upcomingMoviesState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
+    val upcomingMoviesState: State<Flow<PagingData<Movie>>> = _upcomingMoviesState
 
     private val _nowPlayingState = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
     val nowPlayingState: State<Flow<PagingData<Movie>>> = _nowPlayingState
@@ -67,6 +75,9 @@ class HomeViewModel @Inject constructor(
         }
         // Fetch trending movies based on the selected type and genre
         getTrendingMovies(genreId, movieType)
+        getPopularMovie(genreId, movieType)
+        getTopRateMovie(genreId, movieType)
+        getUpcomingMovie(genreId, movieType)
     }
 
 
@@ -139,4 +150,52 @@ class HomeViewModel @Inject constructor(
                     .cachedIn(viewModelScope)
         }
     }
+
+
+    private fun getPopularMovie(genreId: Int?, movieType: MovieType) {
+        viewModelScope.launch {
+            _popularMoviesState.value = if (genreId != null) {
+                movieUseCase.getPopularMovies(movieType).map {
+                    it.filter { movie ->
+                        movie.genreIds?.contains(genreId) ?: false
+                    }
+                }.cachedIn(viewModelScope)
+            } else {
+                movieUseCase.getPopularMovies(movieType)
+                    .cachedIn(viewModelScope)
+            }
+        }
+    }
+
+    private fun getTopRateMovie(genreId: Int?, movieType: MovieType) {
+        viewModelScope.launch {
+            _topRatedMoviesState.value = if (genreId != null) {
+                movieUseCase.getTopRatedMovies(movieType).map {
+                    it.filter { movie ->
+                        movie.genreIds?.contains(genreId) ?: false
+                    }
+                }.cachedIn(viewModelScope)
+            } else {
+                movieUseCase.getTopRatedMovies(movieType)
+                    .cachedIn(viewModelScope)
+            }
+        }
+    }
+
+    private fun getUpcomingMovie(genreId: Int?, movieType: MovieType) {
+        viewModelScope.launch {
+            _upcomingMoviesState.value = if (genreId != null) {
+                movieUseCase.getUpcomingMovies(movieType).map {
+                    it.filter { movie ->
+                        movie.genreIds?.contains(genreId) ?: false
+                    }
+                }.cachedIn(viewModelScope)
+            } else {
+                movieUseCase.getUpcomingMovies(movieType)
+                    .cachedIn(viewModelScope)
+            }
+        }
+    }
+
+
 }

@@ -14,7 +14,12 @@ import com.soe.movieticketapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 data class MovieUseCase(
+    val getNowPlayingMovies: GetNowPlayingMovies,
     val getTrendingMovies: GetTrendingMovies,
+    val getUpcomingMovies: GetUpcomingMovies,
+    val getTopRatedMovies: GetTopRatedMovies,
+    val getPopularMovies: GetPopularMovies,
+
     val getCastAndCrewMovies: GetCastAndCrewMovies,
     val getGenreMovies: GetGenreMovies,
     val getSimilarMoviesAndTvSeries: GetSimilarMoviesAndTvSeries,
@@ -22,14 +27,13 @@ data class MovieUseCase(
     val getTrailersMovie: GetTrailersMovie,
     val getDetailMovies: GetDetailMovies,
     val getSearchMovies: GetSearchMovies,
-    val getNowPlayingMovies: GetNowPlayingMovies
 )
 
 
 class GetTrendingMovies(
     private val repository: MovieRepository
-){
-     operator fun invoke(movieType: MovieType) : Flow<PagingData<Movie>> {
+) {
+    operator fun invoke(movieType: MovieType): Flow<PagingData<Movie>> {
         return repository.getTrendingMovies(movieType)
     }
 }
@@ -37,8 +41,8 @@ class GetTrendingMovies(
 
 class GetNowPlayingMovies(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke() : Flow<PagingData<Movie>>{
+) {
+    suspend operator fun invoke(): Flow<PagingData<Movie>> {
         return repository.getNowPlayingMovies()
     }
 }
@@ -46,13 +50,36 @@ class GetNowPlayingMovies(
 
 class GetSimilarMoviesAndTvSeries(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke(movieType: MovieType, movieId: Int) : Flow<PagingData<Movie>>{
+) {
+    suspend operator fun invoke(movieType: MovieType, movieId: Int): Flow<PagingData<Movie>> {
         return repository.getSimilarMoviesAndTvSeries(movieType, movieId)
     }
 }
 
 
+class GetUpcomingMovies(
+    private val repository: MovieRepository
+) {
+    suspend operator fun invoke(movieType: MovieType): Flow<PagingData<Movie>> {
+        return repository.getUpcomingMovies(movieType)
+    }
+}
+
+class GetTopRatedMovies(
+    private val repository: MovieRepository
+) {
+    suspend operator fun invoke(movieType: MovieType): Flow<PagingData<Movie>> {
+        return repository.getTopRatedMovies(movieType)
+    }
+}
+
+class GetPopularMovies(
+    private val repository: MovieRepository
+) {
+    suspend operator fun invoke(movieType: MovieType): Flow<PagingData<Movie>> {
+        return repository.getPopularMovies(movieType)
+    }
+}
 
 class GetSearchMovies(
     private val repository: MovieRepository
@@ -63,11 +90,10 @@ class GetSearchMovies(
 }
 
 
-
 class GetGenreMovies(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke(movieType: MovieType) : Resource<GenresResponseDTO>{
+) {
+    suspend operator fun invoke(movieType: MovieType): Resource<GenresResponseDTO> {
         return repository.getGenreMovies(movieType)
     }
 }
@@ -75,16 +101,19 @@ class GetGenreMovies(
 
 class GetCastAndCrewMovies(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke(movieId: Int, movieType : MovieType) : Resource<CastResponseDTO> {
+) {
+    suspend operator fun invoke(movieId: Int, movieType: MovieType): Resource<CastResponseDTO> {
         return repository.getCastAndCrewMovies(movieId = movieId, movieType = movieType)
     }
 }
 
 class GetWatchProviders(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke(movieId: Int, movieType: MovieType) : Resource<WatchProviderResponse>{
+) {
+    suspend operator fun invoke(
+        movieId: Int,
+        movieType: MovieType
+    ): Resource<WatchProviderResponse> {
         return repository.getMovieProviders(movieType = movieType, movieId = movieId)
     }
 }
@@ -92,16 +121,22 @@ class GetWatchProviders(
 
 class GetTrailersMovie(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke(movieId: Int, movieType: MovieType) : Resource<TrailerResponseDTO>{
+) {
+    suspend operator fun invoke(
+        movieId: Int,
+        movieType: MovieType
+    ): Resource<TrailerResponseDTO> {
         return repository.getTrailerMovies(movieType = movieType, movieId = movieId)
     }
 }
 
 class GetDetailMovies(
     private val repository: MovieRepository
-){
-    suspend operator fun invoke(movieId: Int, movieType: MovieType) : Resource<DetailResponseDTO>{
+) {
+    suspend operator fun invoke(
+        movieId: Int,
+        movieType: MovieType
+    ): Resource<DetailResponseDTO> {
         return repository.getDetailMovies(movieType = movieType, movieId = movieId)
     }
 }

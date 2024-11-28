@@ -14,10 +14,13 @@ import com.soe.movieticketapp.domain.usecase.GetCastAndCrewMovies
 import com.soe.movieticketapp.domain.usecase.GetDetailMovies
 import com.soe.movieticketapp.domain.usecase.GetGenreMovies
 import com.soe.movieticketapp.domain.usecase.GetNowPlayingMovies
+import com.soe.movieticketapp.domain.usecase.GetPopularMovies
 import com.soe.movieticketapp.domain.usecase.GetSearchMovies
 import com.soe.movieticketapp.domain.usecase.GetSimilarMoviesAndTvSeries
+import com.soe.movieticketapp.domain.usecase.GetTopRatedMovies
 import com.soe.movieticketapp.domain.usecase.GetTrailersMovie
 import com.soe.movieticketapp.domain.usecase.GetTrendingMovies
+import com.soe.movieticketapp.domain.usecase.GetUpcomingMovies
 import com.soe.movieticketapp.domain.usecase.GetWatchProviders
 import com.soe.movieticketapp.domain.usecase.MovieUseCase
 import com.soe.movieticketapp.util.BASE_URL
@@ -131,7 +134,10 @@ object MovieModule {
             getTrailersMovie = GetTrailersMovie(movieRepository),
             getDetailMovies = GetDetailMovies(movieRepository),
             getSearchMovies = GetSearchMovies(movieRepository),
-            getNowPlayingMovies = GetNowPlayingMovies(movieRepository)
+            getNowPlayingMovies = GetNowPlayingMovies(movieRepository),
+            getUpcomingMovies = GetUpcomingMovies(movieRepository),
+            getTopRatedMovies = GetTopRatedMovies(movieRepository),
+            getPopularMovies = GetPopularMovies(movieRepository),
         )
     }
 

@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -54,24 +55,15 @@ fun TopBar(
 
 ) {
 
-
-
-
     TopAppBar(
         modifier = modifier,
-//        navigationIcon = {
-//            IconButton(
-//                modifier = Modifier,
-//                onClick = {}
-//            ) {
-//                Icon(
-//                    painter = painterResource(MovieIcons.menu),
-//                    contentDescription = stringResource(R.string.profile),
-//                    tint = MaterialTheme.colorScheme.onSurface
-//                )
-//            }
-//        },
-
+        colors = TopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+            actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            ),
         title = {
             Box(
                 modifier = Modifier

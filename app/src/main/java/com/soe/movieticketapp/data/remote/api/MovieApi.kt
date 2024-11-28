@@ -63,6 +63,35 @@ interface MovieApi {
     ): DetailResponseDTO
 
 
+    @GET("trending/tv/day")
+    suspend fun getTrendingTvSeries(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int,
+        @Query("language") language: String = LANGUAGE
+    ): MovieResponseDTO
+
+    @GET("popular/tv/day")
+    suspend fun getPopularTvSeries(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int,
+        @Query("language") language: String = LANGUAGE
+    ): MovieResponseDTO
+
+    @GET("top_rated/tv/day")
+    suspend fun getTopRateTvSeries(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int,
+        @Query("language") language: String = LANGUAGE
+    ): MovieResponseDTO
+
+    @GET("upcoming/tv/day")
+    suspend fun getUpcomingTvSeries(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int,
+        @Query("language") language: String = LANGUAGE
+    ): MovieResponseDTO
+
+
     @GET("movie/{movie_id}/similar")
     suspend fun getSimilarMovies(
         @Path("movie_id") movieId : Int,
@@ -79,6 +108,8 @@ interface MovieApi {
         @Query("page") page: Int,
         @Query("language") language: String = LANGUAGE
     ): MovieResponseDTO
+
+
 
 
 
@@ -114,12 +145,7 @@ interface MovieApi {
     ): CastResponseDTO
 
 
-    @GET("trending/tv/day")
-    suspend fun getTrendingTvSeries(
-        @Query("api_key") apiKey: String = API_KEY,
-        @Query("page") page: Int,
-        @Query("language") language: String = LANGUAGE
-    ): MovieResponseDTO
+
 
 
     @GET("search/multi")

@@ -42,4 +42,11 @@
     <string name="total">Total</string>
     <string name="splash_screen_text">Find and book your favorite movie!</string>
     <string name="alart">Don\'t forget to come 10 minutes before the movie starts</string>
+    <string name="cast">Cast</string>
+    <string name="no_cast">No Cast</string>
+    <string name="crew">Crew</string>
+    <string name="no_crew">No Crew</string>
+    <string name="movie_category">Movie Category</string>
+    <string name="top_rate">Top Rate</string>
+    <string name="upcoming">Upcoming</string>
 </resources>
