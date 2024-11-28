@@ -49,4 +49,5 @@
     <string name="movie_category">Movie Category</string>
     <string name="top_rate">Top Rate</string>
     <string name="upcoming">Upcoming</string>
+    <string name="no_similar_movies">No Similar Movies</string>
 </resources>

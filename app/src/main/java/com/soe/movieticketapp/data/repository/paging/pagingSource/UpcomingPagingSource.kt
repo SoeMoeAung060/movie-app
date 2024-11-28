@@ -27,7 +27,7 @@ class UpcomingPagingSource(
                     movieApi.getUpcomingMovies(page = page)
                 } else {
                     Log.d("TrendingPagingSource", "Fetching trending")
-                    movieApi.getUpcomingTvSeries(page = page)
+                    movieApi.getOnTheAirTvSeries(page = page)
                 }
 
 

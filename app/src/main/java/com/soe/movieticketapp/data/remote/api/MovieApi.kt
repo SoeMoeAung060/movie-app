@@ -70,22 +70,22 @@ interface MovieApi {
         @Query("language") language: String = LANGUAGE
     ): MovieResponseDTO
 
-    @GET("popular/tv/day")
+    @GET("tv/popular")
     suspend fun getPopularTvSeries(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("page") page: Int,
         @Query("language") language: String = LANGUAGE
     ): MovieResponseDTO
 
-    @GET("top_rated/tv/day")
+    @GET("tv/top_rated")
     suspend fun getTopRateTvSeries(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("page") page: Int,
         @Query("language") language: String = LANGUAGE
     ): MovieResponseDTO
 
-    @GET("upcoming/tv/day")
-    suspend fun getUpcomingTvSeries(
+    @GET("tv/on_the_air")
+    suspend fun getOnTheAirTvSeries(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("page") page: Int,
         @Query("language") language: String = LANGUAGE

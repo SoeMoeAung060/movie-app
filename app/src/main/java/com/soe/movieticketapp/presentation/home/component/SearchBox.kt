@@ -33,7 +33,7 @@ fun SearchBox(modifier: Modifier = Modifier) {
                 .padding(Padding.Medium)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(Size.IconSizeLarge))
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(MaterialTheme.colorScheme.background),
             value = "",
             onValueChange = {},
             leadingIcon = {

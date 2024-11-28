@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.soe.movieticketapp.domain.model.Movie
 
 
 @Composable
@@ -29,10 +28,10 @@ fun CheckoutButton(
         modifier = modifier
             .width(150.dp)
             .height(48.dp),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.background
         ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 4.dp,

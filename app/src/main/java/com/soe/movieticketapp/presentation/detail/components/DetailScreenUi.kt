@@ -107,12 +107,6 @@ fun DetailScreenUi(
                     onClick = navigateToDetailScreen
                 )
             }
-
-
-//            item{
-//                CrewDetails(crewList = crew)
-//            }
-
         }
     }
 }

@@ -45,8 +45,7 @@ import kotlin.random.Random
 @Composable
 fun Carousel(
     modifier: Modifier = Modifier,
-    movie: Movie,
-    onClick: (Movie) -> Unit,
+    onClick: () -> Unit,
 ) {
 
     val slides = Slide.entries.toTypedArray()
@@ -75,7 +74,7 @@ fun Carousel(
     Box(
         modifier = Modifier.fillMaxWidth()
             .height(Banner.BannerHeight)
-            .clickable { onClick(movie) }
+            .clickable { onClick() }
     ){
         HorizontalPager(
             state = pagerState,
@@ -163,27 +162,27 @@ private fun CarouselPreview() {
     MovieTicketAppTheme {
         Carousel(
             onClick = {},
-            movie = Movie(
-                adult = false,
-                backdropPath = "/path/to/backdrop2.jpg",
-                posterPath = "/path/to/poster2.jpg",
-                genreIds = listOf(16, 35),
-                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
-                mediaType = "movie",
-                firstAirDate = "2023-02-02",
-                id = 2,
-                imdbId = "tt7654321",
-                originalLanguage = "en",
-                originalName = "Original Name 2",
-                overview = "This is the overview of the second movie.",
-                popularity = 9.0,
-                releaseDate = "2023-02-02",
-                runtime = 90,
-                title = "Movie Title 2",
-                video = true,
-                voteAverage = 8.0,
-                voteCount = 200
-            )
+//            movie = Movie(
+//                adult = false,
+//                backdropPath = "/path/to/backdrop2.jpg",
+//                posterPath = "/path/to/poster2.jpg",
+//                genreIds = listOf(16, 35),
+//                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+//                mediaType = "movie",
+//                firstAirDate = "2023-02-02",
+//                id = 2,
+//                imdbId = "tt7654321",
+//                originalLanguage = "en",
+//                originalName = "Original Name 2",
+//                overview = "This is the overview of the second movie.",
+//                popularity = 9.0,
+//                releaseDate = "2023-02-02",
+//                runtime = 90,
+//                title = "Movie Title 2",
+//                video = true,
+//                voteAverage = 8.0,
+//                voteCount = 200
+//            )
         )
     }
 

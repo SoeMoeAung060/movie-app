@@ -132,7 +132,6 @@ fun BodyText(
     textAlign: TextAlign = TextAlign.Left
 ) {
 
-
     Text(
         modifier = modifier,
         text = text,

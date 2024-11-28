@@ -123,7 +123,7 @@ fun GenreChip(
         Text(
             text = genre,
             fontWeight = if (isSelected) FontWeight.Normal else FontWeight.Light,
-            fontSize = if(isSelected) FontSize.Large else FontSize.Medium,
+            fontSize = if(isSelected) FontSize.Medium else FontSize.SemiMedium,
             style = MaterialTheme.typography.bodyMedium,
             color = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.align(Alignment.Center).padding(horizontal = Padding.Small)

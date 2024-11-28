@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.soe.movieticketapp.util.ui.theme.MovieIcons
 import com.soe.movieticketapp.util.ui.theme.blue02
+import com.soe.movieticketapp.util.ui.theme.blue04
 import com.soe.movieticketapp.util.ui.theme.neutral06
 import com.soe.movieticketapp.util.ui.theme.neutral10
 
@@ -36,15 +37,21 @@ import com.soe.movieticketapp.util.ui.theme.neutral10
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SearchHistoryView(
+    modifier: Modifier = Modifier,
     searchHistory: List<String>,
     onClearHistory: () -> Unit,
     onHistoryItemClick: (String) -> Unit,
 ) {
 
-    Surface {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(15.dp, 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -55,7 +62,7 @@ internal fun SearchHistoryView(
                         .padding(bottom = 12.dp),
                     text = "Search History",
                     textAlign = TextAlign.Start,
-                    color = neutral10,
+                    color = blue04,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 FlowRow(
@@ -97,11 +104,11 @@ internal fun SearchHistoryView(
                     Icon(
                         painter = painterResource(MovieIcons.delete),
                         contentDescription = null,
-                        tint = neutral06
+                        tint = blue04
                     )
                     Text(
                         text = "Clear History",
-                        color = neutral06,
+                        color = blue04,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
