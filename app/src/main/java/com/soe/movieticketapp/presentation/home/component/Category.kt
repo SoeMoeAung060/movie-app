@@ -59,11 +59,11 @@ fun GenreSelectContent(
     val selectedIndex = genres.indexOfFirst { it.name == selectedGenre }
 
     // Use LaunchedEffect to scroll to the selected item when it changes
-    LaunchedEffect(selectedIndex) {
-        if (selectedIndex >= 0){
-            listState.animateScrollToItem(index = selectedIndex)
-        }
-    }
+//    LaunchedEffect(selectedIndex) {
+//        if (selectedIndex >= 0){
+//            listState.animateScrollToItem(index = selectedIndex)
+//        }
+//    }
 
     LazyRow(
         state = listState,

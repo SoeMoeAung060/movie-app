@@ -2,6 +2,7 @@ package com.soe.movieticketapp.di.movieModule
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.firestore.FirebaseFirestore
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.soe.movieticketapp.data.local.Dao.trending.TrendingMovieDao
 import com.soe.movieticketapp.data.local.Dao.popular.PopularDao
@@ -119,6 +120,11 @@ object MovieModule {
         movieApi = movieApi,
     )
 
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
 
     @Provides
     @Singleton

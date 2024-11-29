@@ -1,5 +1,6 @@
 package com.soe.movieticketapp.presentation.otherScreen.seatScreen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import com.soe.movieticketapp.presentation.otherScreen.seatScreen.components.Dat
 import com.soe.movieticketapp.presentation.otherScreen.seatScreen.components.SeatSelection
 import com.soe.movieticketapp.presentation.otherScreen.seatScreen.components.ShowTime
 import com.soe.movieticketapp.util.Padding
+import com.soe.movieticketapp.util.getOrCreateUserId
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 
 
@@ -61,15 +63,17 @@ fun SeatScreen(
     val ticketPrice = 40
     val context = LocalContext.current
 
+    val userId = remember { getOrCreateUserId(context) }
+
 
     val pagerState = rememberPagerState(initialPage = times.size / 2) { times.size }
     var selectedTime by remember { mutableStateOf(times[pagerState.currentPage]) }
     var selectedSeats by remember { mutableStateOf(emptySet<Pair<Int, Int>>()) }
     var selectedDate by remember { mutableStateOf("Today") } // Default to "Today"
 
-    val purchaseState = viewModel.purchaseState
-
+//    val purchaseState = viewModel.purchaseState.value
     val getDetailMovie = viewModel.getDetailMovie.value
+
 
 
     // Update selectedTime whenever the page changes
@@ -140,14 +144,20 @@ fun SeatScreen(
                     selectedSeat = selectedSeats,
                     onSeatSelected = { newSelection ->
                         selectedSeats = newSelection
+                        Log.d("SeatSelection", "Current selection: $selectedSeats")
                     },
+
                     onBuyTickets = {
                         if (selectedSeats.isNotEmpty()) {
                             val totalPrice = selectedSeats.size * ticketPrice
+//                            val selectedSeatsSnapshot = selectedSeats.toList() // Create a snapshot
+                            Log.d("SeatSelection", "Final selection before purchase: $selectedSeats")
                             viewModel.purchaseTicket(
                                 selectedSeats = selectedSeats,
                                 selectedTime = selectedTime,
-                                totalPrice = totalPrice
+                                totalPrice = totalPrice,
+                                movieId = movie.id.toString(),
+                                userId = userId
                             )
                             navigateToCheckoutScreen(
                                 selectedDate,
@@ -163,10 +173,11 @@ fun SeatScreen(
                             ).show()
                         }
                     },
-                    movie = movie
+                    movie = movie,
+                    movieId = movie.id.toString(),
+                    showtimeId = selectedTime
                 )
             }
-
 
         }
     }

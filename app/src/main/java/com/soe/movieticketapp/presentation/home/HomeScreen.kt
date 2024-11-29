@@ -85,138 +85,128 @@ fun HomeScreen(
                     top = paddingValues.calculateTopPadding()
                 ),
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (isError) {
-                Text(
-                    text = errorMessage ?: "An error occurred",
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.error
-                )
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = modifier.fillMaxSize(),
-                ) {
-                    item {
+            LazyColumn(
+                state = listState,
+                modifier = modifier.fillMaxSize(),
+            ) {
+                item {
 
-                        Carousel(
-                            onClick = {},
-                        )
+                    Carousel(
+                        onClick = {},
+                    )
 
-                        Spacer(modifier = Modifier.height(Spacing.Large))
+                    Spacer(modifier = Modifier.height(Spacing.Large))
 
-                        NowPlayingHeader(
-                            headerText = stringResource(R.string.now_playing)
-                        )
+                    NowPlayingHeader(
+                        headerText = stringResource(R.string.now_playing)
+                    )
 
-                        Spacer(Modifier.height(Padding.Large))
+                    Spacer(Modifier.height(Padding.Large))
 
-                        NowPlayingMovie(
-                            movies = nowPlayingState,
-                            onClick = navigateToDetailScreen
-                        )
+                    NowPlayingMovie(
+                        movies = nowPlayingState,
+                        onClick = navigateToDetailScreen
+                    )
 
 
-                        Spacer(Modifier.height(Padding.Medium))
+                    Spacer(Modifier.height(Padding.Medium))
 
-
-                    }
-
-                    item {
-                        HeaderMovieText(
-                            modifier = modifier.padding(horizontal = Padding.Medium),
-                            text = stringResource(R.string.movie_category),
-                        )
-                        Spacer(modifier = Modifier.height(Spacing.Medium))
-                    }
-
-                    stickyHeader {
-                        GenreSelectContent()
-                        Spacer(modifier = Modifier.height(Spacing.Medium))
-                    }
-
-                    // Trending Movies
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        HeaderTextLine(
-                            modifier = modifier,
-                            headerText = stringResource(R.string.trending),
-                            seeMoreText = stringResource(R.string.see_more),
-                            onClick = { navigateToListScreen() }
-                        )
-
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        TrendingMovie(
-                            modifier = modifier,
-                            movie = trendingState,
-                            onClick = { navigateToDetailScreen(it) }
-                        )
-                    }
-
-                    // Popular Movies
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        HeaderTextLine(
-                            modifier = modifier,
-                            headerText = stringResource(R.string.popular),
-                            seeMoreText = stringResource(R.string.see_more),
-                            onClick = { navigateToListScreen() }
-                        )
-
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        TrendingMovie(
-                            modifier = modifier,
-                            movie = popularState,
-                            onClick = { navigateToDetailScreen(it) }
-                        )
-                    }
-
-                    // Top Rate Movies
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        HeaderTextLine(
-                            modifier = modifier,
-                            headerText = stringResource(R.string.top_rate),
-                            seeMoreText = stringResource(R.string.see_more),
-                            onClick = { navigateToListScreen() }
-                        )
-
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        TrendingMovie(
-                            modifier = modifier,
-                            movie = topRatedState,
-                            onClick = { navigateToDetailScreen(it) }
-                        )
-                    }
-
-                    // Upcoming Movies
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        HeaderTextLine(
-                            modifier = modifier,
-                            headerText = stringResource(R.string.upcoming),
-                            seeMoreText = stringResource(R.string.see_more),
-                            onClick = { navigateToListScreen() }
-                        )
-
-                        Spacer(modifier = Modifier.height(Spacing.Small))
-
-                        TrendingMovie(
-                            modifier = modifier,
-                            movie = upcomingState,
-                            onClick = { navigateToDetailScreen(it) }
-                        )
-                    }
 
                 }
+
+                item {
+                    HeaderMovieText(
+                        modifier = modifier.padding(horizontal = Padding.Medium),
+                        text = stringResource(R.string.movie_category),
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.Medium))
+                }
+
+                stickyHeader {
+                    GenreSelectContent()
+                    Spacer(modifier = Modifier.height(Spacing.Medium))
+                }
+
+                // Trending Movies
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    HeaderTextLine(
+                        modifier = modifier,
+                        headerText = stringResource(R.string.trending),
+                        seeMoreText = stringResource(R.string.see_more),
+                        onClick = { navigateToListScreen() }
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    TrendingMovie(
+                        modifier = modifier,
+                        movie = trendingState,
+                        onClick = { navigateToDetailScreen(it) }
+                    )
+                }
+
+                // Popular Movies
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    HeaderTextLine(
+                        modifier = modifier,
+                        headerText = stringResource(R.string.popular),
+                        seeMoreText = stringResource(R.string.see_more),
+                        onClick = { navigateToListScreen() }
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    TrendingMovie(
+                        modifier = modifier,
+                        movie = popularState,
+                        onClick = { navigateToDetailScreen(it) }
+                    )
+                }
+
+                // Top Rate Movies
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    HeaderTextLine(
+                        modifier = modifier,
+                        headerText = stringResource(R.string.top_rate),
+                        seeMoreText = stringResource(R.string.see_more),
+                        onClick = { navigateToListScreen() }
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    TrendingMovie(
+                        modifier = modifier,
+                        movie = topRatedState,
+                        onClick = { navigateToDetailScreen(it) }
+                    )
+                }
+
+                // Upcoming Movies
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    HeaderTextLine(
+                        modifier = modifier,
+                        headerText = stringResource(R.string.upcoming),
+                        seeMoreText = stringResource(R.string.see_more),
+                        onClick = { navigateToListScreen() }
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+
+                    TrendingMovie(
+                        modifier = modifier,
+                        movie = upcomingState,
+                        onClick = { navigateToDetailScreen(it) }
+                    )
+                }
+
             }
 
         }

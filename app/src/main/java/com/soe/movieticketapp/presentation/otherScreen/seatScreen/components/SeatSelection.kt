@@ -2,6 +2,7 @@
 
 package com.soe.movieticketapp.presentation.otherScreen.seatScreen.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,25 +16,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.presentation.common.BodyText
 import com.soe.movieticketapp.presentation.common.BuyTicketButton
 import com.soe.movieticketapp.presentation.common.TitleText
+import com.soe.movieticketapp.presentation.otherScreen.seatScreen.SeatScreenViewModel
 import com.soe.movieticketapp.util.FontSize
 import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Size
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SeatSelection(
@@ -41,9 +54,25 @@ fun SeatSelection(
     selectedSeat: Set<Pair<Int, Int>> = emptySet(),
     onSeatSelected: (Set<Pair<Int, Int>>) -> Unit = {},
     onBuyTickets: (Movie) -> Unit,
-    movie: Movie
+    movie: Movie,
+    viewModel: SeatScreenViewModel = hiltViewModel(),
+    movieId: String,
+    showtimeId: String
 
     ) {
+    val seatStatuses by viewModel.seats.collectAsState()
+    val context = LocalContext.current
+
+    // Fetch seats when the screen is loaded
+    LaunchedEffect(Unit) {
+        viewModel.fetchSeats(movieId, showtimeId)
+        viewModel.populateSeats(
+            movieId = movie.id.toString(),
+            showtimeId = showtimeId,
+            rows = 8, // Number of rows in the seating grid
+            columns = 8 // Number of columns in the seating grid
+        )
+    }
 
     val rows = 8
     val columnsPerSide = 4
@@ -66,16 +95,19 @@ fun SeatSelection(
             ) {
                 // Left side seats
                 repeat(columnsPerSide) { columnIndex ->
+                    val seatName = "${('A' + rowIndex)}${columnIndex + 1}"
+                    val status = seatStatuses[seatName] ?: "available"
                     Seat(
                         isSelected = selectedSeat.contains(rowIndex to columnIndex),
+                        isReserved = status == "reserved",
                         onClick = {
-                            val selectedSeat = if (selectedSeat.contains(rowIndex to columnIndex)) {
+                            val updatedSeat = if (selectedSeat.contains(rowIndex to columnIndex)) {
                                 selectedSeat - (rowIndex to columnIndex) // Deselect
                             } else {
                                 selectedSeat + (rowIndex to columnIndex) // Select
                             }
 
-                            onSeatSelected(selectedSeat)
+                            onSeatSelected(updatedSeat)
                         }
                     )
 
@@ -85,15 +117,18 @@ fun SeatSelection(
 
                 // Right side seats
                 repeat(columnsPerSide) { columnIndex ->
+                    val seatName = "${('A' + rowIndex)}${columnIndex + 1}"
+                    val status = seatStatuses[seatName] ?: "available"
                     Seat(
                         isSelected = selectedSeat.contains(rowIndex to (columnsPerSide + columnIndex)),
+                        isReserved = status == "reserved",
                         onClick = {
-                            val selectedSeat = if (selectedSeat.contains(rowIndex to (columnsPerSide + columnIndex))) {
+                            val updatedSeat = if (selectedSeat.contains(rowIndex to (columnsPerSide + columnIndex))) {
                                 selectedSeat - (rowIndex to (columnsPerSide + columnIndex)) // Deselect
                             } else {
                                 selectedSeat + (rowIndex to (columnsPerSide + columnIndex)) // Select
                             }
-                            onSeatSelected(selectedSeat)
+                            onSeatSelected(updatedSeat)
                         }
                     )
 
@@ -159,7 +194,24 @@ fun SeatSelection(
             }
 
             BuyTicketButton(
-                onClick = onBuyTickets,
+                onClick = { selectedMovie ->
+                    val selectedSeats = selectedSeat.map { (row, col) -> "${('A' + row)}${col + 1}" }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val isValid = viewModel.validateSeats(movieId, showtimeId, selectedSeats)
+                        if (isValid) {
+                            selectedSeats.forEach { seat ->
+                                viewModel.updateSeatStatus(movieId, showtimeId, seat, "reserved")
+                            }
+                            withContext(Dispatchers.Main) {
+                                onBuyTickets(selectedMovie)
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "Some seats are no longer available.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                },
                 text = "Buy Now",
                 movie = movie
 
@@ -173,22 +225,30 @@ fun SeatSelection(
 @Composable
 fun Seat(
     isSelected: Boolean,
+    isReserved : Boolean,
     onClick: () -> Unit
 ) {
-    val color =
-        if (isSelected) Color(0xff4AD0EE) else MaterialTheme.colorScheme.background
+    val color = when {
+        isReserved -> {
+            Color(0xff162E84)
+        }
+        isSelected -> {
+            Color(0xff4AD0EE)
+        }
+        else -> MaterialTheme.colorScheme.background
+    }
 
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .padding(4.dp)
-            .background(
-                color = color,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .border(1.dp, Color(0xff1A38A1), RoundedCornerShape(8.dp))
-            .clickable { onClick() }
-    )
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .padding(4.dp)
+                .background(
+                    color = color,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .border(1.dp, Color(0xff1A38A1), RoundedCornerShape(8.dp))
+                .clickable(enabled = !isReserved) { onClick() } // Disable click for reserved seats
+        )
 }
 
 
@@ -268,7 +328,9 @@ private fun SeatSelectionFunctionPreview() {
                 video = true,
                 voteAverage = 8.0,
                 voteCount = 200
-            )
+            ),
+            movieId = "1",
+            showtimeId = "1"
         )
     }
 
