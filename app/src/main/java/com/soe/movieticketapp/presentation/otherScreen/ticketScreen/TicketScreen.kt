@@ -23,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -43,9 +42,6 @@ import com.soe.movieticketapp.presentation.common.CheckoutMovieImage
 import com.soe.movieticketapp.presentation.common.RatingBar
 import com.soe.movieticketapp.presentation.common.RatingText
 import com.soe.movieticketapp.presentation.common.TitleText
-import com.soe.movieticketapp.presentation.common.TopBarWithPopUpScreen
-import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.CheckOutScreenViewModel
-import com.soe.movieticketapp.stripePayment.StripePayment
 import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
 import com.soe.movieticketapp.util.FontSize
 import com.soe.movieticketapp.util.MovieType

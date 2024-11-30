@@ -2,6 +2,7 @@
 
 package com.soe.movieticketapp.presentation.otherScreen.seatScreen.components
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -74,11 +75,16 @@ fun SeatSelection(
         )
     }
 
+    // Debug logging to check StateFlow updates
+    LaunchedEffect(seatStatuses) {
+        Log.d("SeatSelection", "Updated seat statuses: $seatStatuses")
+    }
+
     val rows = 8
-    val columnsPerSide = 4
-    val roadWidth = 20.dp
+    val columns = 8
 
     val seatPrice = 40
+
 
     //Seat grid
     Column(
@@ -94,7 +100,7 @@ fun SeatSelection(
                 horizontalArrangement = Arrangement.Center
             ) {
                 // Left side seats
-                repeat(columnsPerSide) { columnIndex ->
+                repeat(columns) { columnIndex ->
                     val seatName = "${('A' + rowIndex)}${columnIndex + 1}"
                     val status = seatStatuses[seatName] ?: "available"
                     Seat(
@@ -107,27 +113,6 @@ fun SeatSelection(
                                 selectedSeat + (rowIndex to columnIndex) // Select
                             }
 
-                            onSeatSelected(updatedSeat)
-                        }
-                    )
-
-                }
-                // Road (aisle) in the middle
-                Spacer(modifier = Modifier.width(roadWidth))
-
-                // Right side seats
-                repeat(columnsPerSide) { columnIndex ->
-                    val seatName = "${('A' + rowIndex)}${columnIndex + 1}"
-                    val status = seatStatuses[seatName] ?: "available"
-                    Seat(
-                        isSelected = selectedSeat.contains(rowIndex to (columnsPerSide + columnIndex)),
-                        isReserved = status == "reserved",
-                        onClick = {
-                            val updatedSeat = if (selectedSeat.contains(rowIndex to (columnsPerSide + columnIndex))) {
-                                selectedSeat - (rowIndex to (columnsPerSide + columnIndex)) // Deselect
-                            } else {
-                                selectedSeat + (rowIndex to (columnsPerSide + columnIndex)) // Select
-                            }
                             onSeatSelected(updatedSeat)
                         }
                     )

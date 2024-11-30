@@ -81,6 +81,8 @@ fun SeatScreen(
         selectedTime = times[pagerState.currentPage]
     }
 
+
+
     Scaffold(
         topBar = {
             TopBarWithPopUpScreen(
@@ -150,15 +152,8 @@ fun SeatScreen(
                     onBuyTickets = {
                         if (selectedSeats.isNotEmpty()) {
                             val totalPrice = selectedSeats.size * ticketPrice
-//                            val selectedSeatsSnapshot = selectedSeats.toList() // Create a snapshot
                             Log.d("SeatSelection", "Final selection before purchase: $selectedSeats")
-                            viewModel.purchaseTicket(
-                                selectedSeats = selectedSeats,
-                                selectedTime = selectedTime,
-                                totalPrice = totalPrice,
-                                movieId = movie.id.toString(),
-                                userId = userId
-                            )
+
                             navigateToCheckoutScreen(
                                 selectedDate,
                                 selectedTime,

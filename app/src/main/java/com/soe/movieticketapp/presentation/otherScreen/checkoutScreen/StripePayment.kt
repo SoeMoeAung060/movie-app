@@ -1,10 +1,8 @@
-package com.soe.movieticketapp.stripePayment
+package com.soe.movieticketapp.presentation.otherScreen.checkoutScreen
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -12,15 +10,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.json.responseJson
 import com.github.kittinunf.result.Result
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.navigation.MovieNavController
-import com.soe.movieticketapp.navigation.ScreenRoute
+import com.soe.movieticketapp.navigation.serializeMovieToJson
 import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.component.CheckoutButton
+import com.soe.movieticketapp.presentation.otherScreen.seatScreen.SeatScreenViewModel
 import com.soe.movieticketapp.util.BACKEND_URL_ENDPOINT
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
@@ -37,7 +36,8 @@ fun StripePayment(
     time: String,
     seats: String,
     price: String,
-    movie: Movie
+    movie: Movie,
+    viewModel: SeatScreenViewModel
 ) {
 
     val context = LocalContext.current
@@ -51,7 +51,8 @@ fun StripePayment(
             seats = seats,
             price = price,
             movie = movie,
-            context = context
+            context = context,
+            viewModel = viewModel
         )
     }
     var customerConfig by remember { mutableStateOf<PaymentSheet.CustomerConfiguration?>(null) }
@@ -111,39 +112,45 @@ fun StripePayment(
     )
 }
 
-
 private fun onPaymentSheetResult(
     paymentSheetResult: PaymentSheetResult,
     navController: MovieNavController,
-    context : Context,
+    viewModel: SeatScreenViewModel,
+    context: Context,
     date: String,
     time: String,
     seats: String,
     price: String,
     movie: Movie
 ) {
-
     when (paymentSheetResult) {
-        is PaymentSheetResult.Canceled -> {
-            Log.d("StripePayment", "Payment canceled")
-            Toast.makeText(context, "Payment canceled", Toast.LENGTH_SHORT).show()
-        }
         is PaymentSheetResult.Failed -> {
             Log.e("StripePayment", "Payment failed: ${paymentSheetResult.error.localizedMessage}")
             Toast.makeText(context, "Payment failed", Toast.LENGTH_SHORT).show()
         }
+        is PaymentSheetResult.Canceled -> {
+            Log.d("StripePayment", "Payment canceled")
+            Toast.makeText(context, "Payment canceled", Toast.LENGTH_SHORT).show()
+        }
         is PaymentSheetResult.Completed -> {
             Toast.makeText(context, "Payment successful!", Toast.LENGTH_SHORT).show()
 
-            // Serialize the movie object
-            val movieJson = serializeMovieToJson(movie)
+            // Reserve seats in Firestore
+            val seatList = seats.split(",").map { it.trim() }
+            viewModel.reserveSeatsInFirestore(
+                movieId = movie.id.toString(),
+                showtimeId = time,
+                selectedSeats = seatList,
+                userId = FirebaseAuth.getInstance().currentUser?.uid ?: "Anonymous"
+            )
 
-            Log.d("StripePayment", "Payment completed successfully")
+            // Refresh seats after reservation
+            viewModel.fetchSeats(movie.id.toString(), time)
+
+            // Navigate to the ticket screen
+            val movieJson = serializeMovieToJson(movie)
             navController.navigate("ticket_screen?date=$date&time=$time&seats=${URLEncoder.encode(seats, "UTF-8")}&price=$price&movie=$movieJson")
         }
     }
 }
 
-fun serializeMovieToJson(movie: Movie): String {
-    return Gson().toJson(movie)
-}

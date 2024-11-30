@@ -133,9 +133,16 @@ dependencies {
 
     // Stripe Android SDK
     implementation(libs.stripe.android)
+
     // Add the following lines to build.gradle to use this example's networking library:
-   implementation (libs.fuel.json)
+    implementation (libs.fuel.json)
     implementation (libs.fuel)
+
+
+    implementation (libs.kotlinx.coroutines.core)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+
+
 
 
 

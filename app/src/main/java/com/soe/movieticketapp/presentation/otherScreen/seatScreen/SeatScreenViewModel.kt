@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
 import com.soe.movieticketapp.data.mapper.toDetail
 import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.usecase.MovieUseCase
@@ -27,8 +30,8 @@ class SeatScreenViewModel @Inject constructor(
     private val firestore: FirebaseFirestore,
 ) : ViewModel(){
 
-    private val _purchaseState = mutableStateOf<PurchaseState>(PurchaseState.Idle)
-    val purchaseState : State<PurchaseState> = _purchaseState
+//    private val _purchaseState = mutableStateOf<PurchaseState>(PurchaseState.Idle)
+//    val purchaseState : State<PurchaseState> = _purchaseState
 
     private val _getDetailMovie = mutableStateOf<Detail?>(null)
     val getDetailMovie : State<Detail?> = _getDetailMovie
@@ -37,99 +40,103 @@ class SeatScreenViewModel @Inject constructor(
     private val _seats = MutableStateFlow<Map<String, String>>(emptyMap()) // SeatName -> Status
     val seats: StateFlow<Map<String, String>> = _seats
 
-    fun purchaseTicket(
-        selectedSeats : Set<Pair<Int, Int>>,
-        selectedTime : String,
-        totalPrice : Int,
-        movieId : String,
-        userId : String
-    ){
+    private var seatsListener: ListenerRegistration? = null
 
-        Log.d("PurchaseTicket", "Processing selectedSeats: $selectedSeats")
-        if(selectedSeats.isEmpty()){
-            _purchaseState.value = PurchaseState.Error("Please select at least one seat")
-            return
-        }
-
-        _purchaseState.value = PurchaseState.Loading
-
-        viewModelScope.launch {
-
-            try {
-                Log.d("SelectedSeats", "Seats selected: $selectedSeats")
-                val seatToReserve = selectedSeats.map {getSeatName(it.first, it.second)}
-                Log.d("MappedSeats", "Mapped seat names: $seatToReserve")
-                reserveSeatsInFirestore(
-                    movieId = movieId,
-                    showtimeId = selectedTime,
-                    selectedSeats = seatToReserve,
-                    userId = userId,
-                )
-                val ticketDetail = TicketDetail(
-                    seats = seatToReserve.joinToString(), // Convert seat names to a single string
-                    time = selectedTime,
-                    total = totalPrice
-                )
-                _purchaseState.value = PurchaseState.Success(ticketDetail)
-            }catch (e : Exception){
-                _purchaseState.value = PurchaseState.Error(e.message.toString())
-            }
-        }
+    init {
+        initializeAuthentication()
     }
 
-    private fun reserveSeatsInFirestore(
+    private fun initializeAuthentication() {
+        FirebaseAuth.getInstance().signInAnonymously()
+            .addOnSuccessListener { Log.d("Auth", "Signed in anonymously") }
+            .addOnFailureListener { e -> Log.e("Auth", "Authentication failed: ${e.message}") }
+    }
+
+
+//    fun purchaseTicket(
+//        selectedSeats: Set<Pair<Int, Int>>,
+//        selectedTime: String,
+//        totalPrice: Int
+//    ) {
+//        if (selectedSeats.isEmpty()) {
+//            _purchaseState.value = PurchaseState.Error("Please select at least one seat")
+//            return
+//        }
+//
+//        _purchaseState.value = PurchaseState.Loading
+//
+//        viewModelScope.launch {
+//            try {
+//                // Only pass data to the next screen; do not reserve seats here
+//                val ticketDetail = TicketDetail(
+//                    seats = selectedSeats.map { getSeatName(it.first, it.second) }.joinToString(),
+//                    time = selectedTime,
+//                    total = totalPrice
+//                )
+//                _purchaseState.value = PurchaseState.Success(ticketDetail)
+//            } catch (e: Exception) {
+//                _purchaseState.value = PurchaseState.Error(e.message.toString())
+//            }
+//        }
+//    }
+
+     fun reserveSeatsInFirestore(
         movieId: String,
         showtimeId: String,
         selectedSeats: List<String>,
         userId: String
     ) {
         firestore.runTransaction { transaction ->
-            Log.d("FirestoreDebug", "reserveSeatsInFirestore called with: $selectedSeats")
-            selectedSeats.forEach { seatId ->
-                Log.d("ProcessingSeat", "Processing seat: $seatId") // Log each seat being processed
-                try {
-                    val seatDocRef = firestore
-                        .collection("movies")
-                        .document(movieId)
-                        .collection("showtimes")
-                        .document(showtimeId)
-                        .collection("seats")
-                        .document(seatId)
+            val alreadyReservedSeats = mutableListOf<String>()
+            val seatRefs = selectedSeats.map { seatId ->
+                firestore.collection("movies")
+                    .document(movieId)
+                    .collection("showtimes")
+                    .document(showtimeId)
+                    .collection("seats")
+                    .document(seatId)
+            }
 
-                    Log.d("FirestorePath", "Updating seat path: ${seatDocRef.path}")
+            // Step 1: Read all seat statuses
+            seatRefs.forEach { seatRef ->
+                val snapshot = transaction.get(seatRef)
+                val currentStatus = snapshot.getString("status") ?: "unknown"
 
-                    val seatSnapshot = transaction.get(seatDocRef)
-                    val currentStatus = seatSnapshot.getString("status")
-
-                    if (currentStatus == "available") {
-                        transaction.update(
-                            seatDocRef,
-                            mapOf(
-                                "status" to "reserved",
-                                "userId" to userId,
-                                "timestamp" to Timestamp.now().toDate().toString()
-                            )
-                        )
-                        Log.d("FirestoreUpdate", "Seat $seatId reserved successfully.")
-                    } else if (currentStatus == "reserved") {
-                        throw IllegalStateException("Seat $seatId is already reserved.")
-                    } else {
-                        throw IllegalStateException("Invalid seat status for $seatId: $currentStatus")
-                    }
-                }catch (e:Exception){
-                    Log.e("FirestoreError", "Error processing seat $seatId: ${e.message}")
+                if (currentStatus == "reserved") {
+                    alreadyReservedSeats.add(seatRef.id)
                 }
+            }
+
+            // Abort the transaction if any seats are already reserved
+            if (alreadyReservedSeats.isNotEmpty()) {
+                throw FirebaseFirestoreException(
+                    "The following seats are already reserved: $alreadyReservedSeats",
+                    FirebaseFirestoreException.Code.ABORTED
+                )
+            }
+
+            // Step 2: Update seat statuses
+            seatRefs.forEach { seatRef ->
+                transaction.update(seatRef, mapOf(
+                    "status" to "reserved",
+                    "userId" to userId,
+                    "timestamp" to Timestamp.now()
+                ))
             }
         }.addOnSuccessListener {
             Log.d("FirestoreTransaction", "Transaction completed successfully.")
-        }.addOnFailureListener { exception ->
-            Log.e("FirestoreTransaction", "Transaction failed: ${exception.message}")
+        }.addOnFailureListener { e ->
+            Log.e("FirestoreTransaction", "Transaction failed: ${e.message}")
         }
     }
 
-    fun resetPurchaseState(){
-        _purchaseState.value = PurchaseState.Idle
-    }
+
+
+
+
+//    fun resetPurchaseState(){
+//        _purchaseState.value = PurchaseState.Idle
+//    }
 
 
     fun getDetailMovies(movieId: Int, movieType: MovieType){
@@ -163,6 +170,7 @@ class SeatScreenViewModel @Inject constructor(
                     val seatMap = snapshot.documents.associate { doc ->
                         doc.id to (doc.getString("status") ?: "available")
                     }
+                    Log.d("SeatFlow", "Fetched seat statuses: $seatMap") // Debugging
                     _seats.value = seatMap
                 }
             }
@@ -190,48 +198,78 @@ class SeatScreenViewModel @Inject constructor(
             }
     }
 
-    // Validate seat availability
-    suspend fun validateSeats(movieId: String, showtimeId: String, selectedSeats: List<String>): Boolean {
+    // Validate seat availability Before Payment
+    suspend fun validateSeats(
+        movieId: String,
+        showtimeId: String,
+        selectedSeats: List<String>
+    ): Boolean {
         val seatCollection = firestore.collection("movies")
             .document(movieId)
             .collection("showtimes")
             .document(showtimeId)
             .collection("seats")
 
+        val unavailableSeats = mutableListOf<String>()
+
         for (seat in selectedSeats) {
             val snapshot = seatCollection.document(seat).get().await()
-            if (snapshot.exists() && snapshot.getString("status") != "available") {
-                return false
-            }
-        }
-        return true
-    }
-
-    fun populateSeats(movieId: String, showtimeId: String, rows: Int, columns: Int) {
-        val batch = firestore.batch()
-        for (row in 0 until rows) {
-            for (col in 0 until columns) {
-                val seatName = "${('A' + row)}${col + 1}" // Generate seat names (e.g., A1, B5)
-                val seatDocRef = firestore
-                    .collection("movies")
-                    .document(movieId)
-                    .collection("showtimes")
-                    .document(showtimeId)
-                    .collection("seats")
-                    .document(seatName)
-
-                batch.set(seatDocRef, mapOf(
-                    "status" to "available",
-                    "userId" to null,
-                    "timestamp" to null
-                ))
+            val currentStatus = snapshot.getString("status") ?: "available"
+            if (currentStatus == "reserved") {
+                unavailableSeats.add(seat)
             }
         }
 
-        batch.commit()
-            .addOnSuccessListener { Log.d("Firestore", "Seats populated successfully.") }
-            .addOnFailureListener { e -> Log.e("Firestore", "Error populating seats: ${e.message}") }
+        return if (unavailableSeats.isEmpty()) {
+            true
+        } else {
+            Log.e("SeatValidation", "Unavailable seats: $unavailableSeats")
+            false
+        }
     }
 
 
+
+    fun populateSeats(
+        movieId: String,
+        showtimeId: String,
+        rows: Int,
+        columns: Int
+    ) {
+        val seatCollectionRef = firestore.collection("movies")
+            .document(movieId)
+            .collection("showtimes")
+            .document(showtimeId)
+            .collection("seats")
+
+        seatCollectionRef.get()
+            .addOnSuccessListener { snapshot ->
+                if (snapshot.isEmpty) {
+                    val batch = firestore.batch()
+                    for (row in 0 until rows) {
+                        for (col in 0 until columns) {
+                            val seatName = "${('A' + row)}${col + 1}"
+                            val seatDocRef = seatCollectionRef.document(seatName)
+                            batch.set(seatDocRef, mapOf(
+                                "status" to "available",
+                                "userId" to "",
+                                "timestamp" to ""
+                            ))
+                        }
+                    }
+                    batch.commit()
+                        .addOnSuccessListener { Log.d("Firestore", "Seats populated successfully.") }
+                        .addOnFailureListener { e -> Log.e("Firestore", "Error populating seats: ${e.message}") }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error checking existing seats: ${e.message}")
+            }
+    }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        seatsListener?.remove() // Detach the listener to avoid memory leaks
+    }
 }

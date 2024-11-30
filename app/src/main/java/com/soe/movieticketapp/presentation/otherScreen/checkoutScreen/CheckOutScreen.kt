@@ -12,16 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,23 +27,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.navigation.MovieNavController
-import com.soe.movieticketapp.navigation.ScreenRoute
-import com.soe.movieticketapp.presentation.common.BuyTicketButton
 import com.soe.movieticketapp.presentation.common.CheckoutMovieImage
 import com.soe.movieticketapp.presentation.common.RatingBar
 import com.soe.movieticketapp.presentation.common.RatingText
-import com.soe.movieticketapp.presentation.common.SmallCardMovieImage
 import com.soe.movieticketapp.presentation.common.TitleText
 import com.soe.movieticketapp.presentation.common.TopBarWithPopUpScreen
-import com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.component.CheckoutButton
-import com.soe.movieticketapp.stripePayment.StripePayment
+import com.soe.movieticketapp.presentation.otherScreen.seatScreen.SeatScreenViewModel
 import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
 import com.soe.movieticketapp.util.FontSize
 import com.soe.movieticketapp.util.MovieType
@@ -68,7 +57,7 @@ fun CheckoutScreen(
     movie: Movie,
     movieType: MovieType,
     popUp:() -> Unit,
-    viewModel: CheckOutScreenViewModel = hiltViewModel(),
+    viewModel: SeatScreenViewModel = hiltViewModel(),
     movieNavController: MovieNavController
     ) {
 
@@ -88,7 +77,8 @@ fun CheckoutScreen(
             movie = movie,
             detail = getDetailMovie,
             popUp = popUp,
-            movieNavController = movieNavController
+            movieNavController = movieNavController,
+            viewModel = viewModel
         )
     }
 }
@@ -104,7 +94,8 @@ fun CheckoutScreenContent(
     movie: Movie,
     detail: Detail,
     popUp:() -> Unit,
-    movieNavController: MovieNavController
+    movieNavController: MovieNavController,
+    viewModel: SeatScreenViewModel
 ) {
 
 
@@ -345,7 +336,8 @@ fun CheckoutScreenContent(
                 time = time,
                 seats = seats,
                 price = price,
-                movie = movie
+                movie = movie,
+                viewModel = viewModel
             )
         }
     }
@@ -387,7 +379,9 @@ fun CheckoutContent(
 
 @Preview
 @Composable
-private fun CheckoutScreenPreview() {
+private fun CheckoutScreenPreview(
+    viewModel: SeatScreenViewModel = hiltViewModel()
+) {
 
     val navController = rememberNavController()
     val movieNavController = MovieNavController(navController)
@@ -441,7 +435,8 @@ private fun CheckoutScreenPreview() {
                 status = "Released"
             ),
             popUp = {},
-            movieNavController = movieNavController
+            movieNavController = movieNavController,
+            viewModel = viewModel
         )
     }
     

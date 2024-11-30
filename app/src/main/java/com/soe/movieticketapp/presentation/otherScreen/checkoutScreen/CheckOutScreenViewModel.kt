@@ -5,18 +5,25 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
 import com.soe.movieticketapp.data.mapper.toDetail
 import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.usecase.MovieUseCase
 import com.soe.movieticketapp.util.MovieType
 import com.soe.movieticketapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CheckOutScreenViewModel @Inject constructor(
-    private val movieUseCase: MovieUseCase
+    private val movieUseCase: MovieUseCase,
+    private val firestore: FirebaseFirestore
 ): ViewModel(){
 
 
@@ -37,5 +44,7 @@ class CheckOutScreenViewModel @Inject constructor(
             }
         }
     }
+
+
 
 }
