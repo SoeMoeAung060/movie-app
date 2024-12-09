@@ -23,10 +23,6 @@ Minimum SDK level 24
 
 ## Screenshot
 
-## Screenshots
-
-Here are some screenshots of the app:
-
 |                          |                          |
 |--------------------------|--------------------------|
 | ![Home](docs/images/Home.png) | ![Category](docs/images/MovieCategory.png) |
