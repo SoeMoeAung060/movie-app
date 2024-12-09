@@ -46,4 +46,4 @@ Include some screenshots of the app here to give users an idea of the design and
 3. Build and Run the app on an Android device or emulator.
 
 ### License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is licensed under the MIT License. See the [LICENSE](./LINCENSE) file for more details.
