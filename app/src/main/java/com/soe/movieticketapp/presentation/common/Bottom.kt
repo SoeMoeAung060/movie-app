@@ -1,5 +1,6 @@
 package com.soe.movieticketapp.presentation.common
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import com.soe.movieticketapp.domain.model.Detail
 import com.soe.movieticketapp.domain.model.Genre
 import com.soe.movieticketapp.domain.model.Movie
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
+import com.soe.movieticketapp.util.ui.theme.blue07
 
 @Composable
 fun BuyTicketButton(
@@ -29,6 +31,13 @@ fun BuyTicketButton(
     onClick: (Movie) -> Unit,
     text : String
 ) {
+
+    val buttonColor = if (isSystemInDarkTheme()){
+        MaterialTheme.colorScheme.background
+    }else{
+        blue07
+    }
+
     Button(
         onClick = { onClick(movie) } ,
         modifier = modifier
@@ -36,7 +45,7 @@ fun BuyTicketButton(
             .height(48.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
+            containerColor = buttonColor,
             contentColor = MaterialTheme.colorScheme.background
         ),
         elevation = ButtonDefaults.buttonElevation(

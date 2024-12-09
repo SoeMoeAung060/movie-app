@@ -1,5 +1,6 @@
 package com.soe.movieticketapp.presentation.otherScreen.checkoutScreen.component
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.soe.movieticketapp.util.ui.theme.blue07
 
 
 @Composable
@@ -23,6 +25,13 @@ fun CheckoutButton(
     onClick: () -> Unit,
     text : String
 ) {
+
+    val buttonColor = if (isSystemInDarkTheme()){
+        MaterialTheme.colorScheme.background
+    }else{
+        blue07
+    }
+
     Button(
         onClick = onClick,
         modifier = modifier
@@ -30,7 +39,7 @@ fun CheckoutButton(
             .height(48.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
+            containerColor = buttonColor,
             contentColor = MaterialTheme.colorScheme.background
         ),
         elevation = ButtonDefaults.buttonElevation(

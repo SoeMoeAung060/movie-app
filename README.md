@@ -36,6 +36,20 @@ Minimum SDK level 24
     <td><img src="docs/images/SearchScreen.png" alt="Search Screen" width="200"/></td>
     <td><img src="docs/images/SearchHistory.png" alt="Search History" width="200"/></td>
   </tr>
+
+<tr>
+    <td><img src="docs/images/HomeScreenLight.png" alt="Home" width="200"/></td>
+    <td><img src="docs/images/MovieCategoryLight.png" alt="Movie Category" width="200"/></td>
+    <td><img src="docs/images/DetailScreenLight.png" alt="Detail" width="200"/></td>
+    <td><img src="docs/images/SelectSeatsScreenLight.png" alt="Select Seats" width="200"/></td>
+  </tr>
+
+  <tr>
+    <td><img src="docs/images/CheckoutScreenLight.png" alt="Checkout" width="200"/></td>
+    <td><img src="docs/images/CheckoutSuccessfulScreenLight.png" alt="Checkout Successful" width="200"/></td>
+    <td><img src="docs/images/SearchScreenLight.png" alt="Search Screen" width="200"/></td>
+    <td><img src="docs/images/SearchHistoryLight.png" alt="Search History" width="200"/></td>
+  </tr>
 </table>
 
 ### Installation

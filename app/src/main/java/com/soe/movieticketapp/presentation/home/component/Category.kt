@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,7 @@ import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Size
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
 import com.soe.movieticketapp.util.ui.theme.blue06
+import com.soe.movieticketapp.util.ui.theme.blue07
 
 
 @Composable
@@ -64,6 +66,7 @@ fun GenreSelectContent(
 //            listState.animateScrollToItem(index = selectedIndex)
 //        }
 //    }
+
 
     LazyRow(
         state = listState,
@@ -98,8 +101,14 @@ fun GenreChip(
     onClick: () -> Unit
 ) {
 
+    val selectedColor = if (isSystemInDarkTheme()){
+        MaterialTheme.colorScheme.background
+    }else{
+        blue07
+    }
+
     val animateChipBackgroundColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.secondary else blue06.copy(alpha = 0.5F),
+        targetValue = if (isSelected) selectedColor else blue06.copy(alpha = 0.2F),
         animationSpec = tween(
             durationMillis = if (isSelected) 100 else 50,
             delayMillis = 0,

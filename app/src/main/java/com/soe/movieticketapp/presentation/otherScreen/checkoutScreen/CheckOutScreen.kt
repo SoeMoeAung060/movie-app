@@ -1,6 +1,9 @@
 package com.soe.movieticketapp.presentation.otherScreen.checkoutScreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,8 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +48,8 @@ import com.soe.movieticketapp.util.MovieType
 import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Spacing
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
+import com.soe.movieticketapp.util.ui.theme.blue02
+import com.soe.movieticketapp.util.ui.theme.darkNavy
 
 
 @Composable
@@ -56,10 +61,10 @@ fun CheckoutScreen(
     price: String,
     movie: Movie,
     movieType: MovieType,
-    popUp:() -> Unit,
+    popUp: () -> Unit,
     viewModel: SeatScreenViewModel = hiltViewModel(),
     movieNavController: MovieNavController
-    ) {
+) {
 
     val getDetailMovie = viewModel.getDetailMovie.value
 
@@ -93,11 +98,10 @@ fun CheckoutScreenContent(
     modifier: Modifier = Modifier,
     movie: Movie,
     detail: Detail,
-    popUp:() -> Unit,
+    popUp: () -> Unit,
     movieNavController: MovieNavController,
     viewModel: SeatScreenViewModel
 ) {
-
 
 
     val context = LocalContext.current
@@ -106,6 +110,24 @@ fun CheckoutScreenContent(
     val tax = 3
     val totalTax = seatCount * tax
     val totalAmount = price.toInt() + totalTax
+
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        darkNavy
+    } else {
+        blue02.copy(0.5f)
+    }
+
+    val ratingColor = if (isSystemInDarkTheme()) {
+        Color.Yellow
+    } else {
+        DarkGray
+    }
+
+    val textColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+    } else {
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+    }
 
 
     Scaffold(
@@ -125,16 +147,16 @@ fun CheckoutScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = it.calculateTopPadding()),
-            ){
+            ) {
                 Box(
                     modifier = modifier
                         .width(350.dp)
                         .height(500.dp)
                         .padding(Padding.Medium)
                         .clip(RoundedCornerShape(Padding.Medium))
-                        .background(colorResource(R.color.DarkBlue))
+                        .background(backgroundColor)
                         .align(Alignment.Center),
-                ){
+                ) {
 
                     Column(
                         modifier = Modifier
@@ -150,7 +172,7 @@ fun CheckoutScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.Top
-                        ){
+                        ) {
                             CheckoutMovieImage(
                                 imageUrl = "${BASE_POSTER_IMAGE_URL}${movie.posterPath}",
                                 context = context,
@@ -173,7 +195,7 @@ fun CheckoutScreenContent(
 
                                 TitleText(
                                     modifier = Modifier.padding(bottom = Padding.Small),
-                                    text = detail.genres.joinToString(", ") {genre -> genre.name },
+                                    text = detail.genres.joinToString(", ") { genre -> genre.name },
                                     fontSize = FontSize.Medium,
                                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
                                 )
@@ -184,17 +206,25 @@ fun CheckoutScreenContent(
                                         .padding(vertical = Padding.Small),
                                     horizontalArrangement = Arrangement.Start,
                                     verticalAlignment = Alignment.CenterVertically
-                                ){
+                                ) {
                                     RatingBar(
                                         modifier = Modifier.padding(),
                                         rating = (movie.voteAverage?.div(2)),
-                                        starsColor = Color.Yellow
+                                        starsColor = ratingColor
                                     )
 
                                     RatingText(
-                                        modifier = Modifier.padding(),
+                                        modifier = Modifier
+                                            .padding(Padding.Small)
+                                            .border(
+                                                BorderStroke(
+                                                    1.dp,
+                                                    if (isSystemInDarkTheme()) Color.Yellow else DarkGray,
+                                                )
+                                            )
+                                            .clip(RoundedCornerShape(Padding.Medium)),
                                         rating = movie.voteAverage,
-                                        color = Color.Yellow
+                                        color = ratingColor
                                     )
                                 }
 
@@ -209,7 +239,7 @@ fun CheckoutScreenContent(
                                 .padding(top = Padding.Medium),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             CheckoutContent(
                                 text = stringResource(R.string.date),
                                 checkoutText = date
@@ -227,7 +257,7 @@ fun CheckoutScreenContent(
                                 .padding(top = Padding.Medium),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             CheckoutContent(
                                 text = stringResource(R.string.studio),
                                 checkoutText = stringResource(R.string.studio_name),
@@ -243,10 +273,12 @@ fun CheckoutScreenContent(
                         Spacer(Modifier.height(Spacing.Medium))
 
 
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f))
+                        )
 
 
                         Row(
@@ -255,12 +287,16 @@ fun CheckoutScreenContent(
                                 .padding(top = Padding.Medium),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             TitleText(
-                                text = if(seatCount == 1) "1 ${stringResource(R.string.ticket)}" else "$seatCount ${stringResource(R.string.tickets)}",
+                                text = if (seatCount == 1) "1 ${stringResource(R.string.ticket)}" else "$seatCount ${
+                                    stringResource(
+                                        R.string.tickets
+                                    )
+                                }",
                                 fontSize = FontSize.Medium,
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                                color = textColor
                             )
 
                             TitleText(
@@ -278,12 +314,12 @@ fun CheckoutScreenContent(
                                 .padding(top = Padding.Medium),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             TitleText(
                                 text = stringResource(R.string.tax),
                                 fontSize = FontSize.Medium,
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                                color = textColor
                             )
 
                             TitleText(
@@ -296,10 +332,12 @@ fun CheckoutScreenContent(
 
                         Spacer(Modifier.height(Spacing.Medium))
 
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f))
+                        )
 
 
                         Row(
@@ -308,7 +346,7 @@ fun CheckoutScreenContent(
                                 .padding(top = Padding.Medium),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             TitleText(
                                 text = stringResource(R.string.total),
                                 fontSize = FontSize.Large,
@@ -348,20 +386,26 @@ fun CheckoutScreenContent(
 @Composable
 fun CheckoutContent(
     modifier: Modifier = Modifier,
-    text : String,
-    checkoutText : String,
-    ) {
+    text: String,
+    checkoutText: String,
+) {
+
+    val textColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+    } else {
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+    }
 
     Column(
         modifier = modifier,
-        horizontalAlignment = if (text == "Time" || text == "Seat")Alignment.End else Alignment.Start,
+        horizontalAlignment = if (text == "Time" || text == "Seat") Alignment.End else Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
         TitleText(
             text = text,
             fontSize = FontSize.Medium,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+            color = textColor
 
         )
 
@@ -373,7 +417,7 @@ fun CheckoutContent(
 
         )
     }
-    
+
 }
 
 
@@ -439,5 +483,5 @@ private fun CheckoutScreenPreview(
             viewModel = viewModel
         )
     }
-    
+
 }

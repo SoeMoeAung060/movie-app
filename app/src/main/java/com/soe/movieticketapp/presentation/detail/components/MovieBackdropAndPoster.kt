@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +31,7 @@ import com.soe.movieticketapp.util.BASE_POSTER_IMAGE_URL
 import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Size
 import com.soe.movieticketapp.util.ui.theme.MovieIcons
+import com.soe.movieticketapp.util.ui.theme.blue07
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -40,6 +42,9 @@ fun MovieBackdropAndPoster(
     onClickTrailer:(Int?)->Unit,
     onClickBuyTicket: (Movie) -> Unit
 ) {
+
+
+
     Box(
         modifier = modifier
     ) {

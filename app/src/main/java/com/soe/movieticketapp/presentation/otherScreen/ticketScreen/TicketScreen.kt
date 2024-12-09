@@ -1,8 +1,11 @@
 package com.soe.movieticketapp.presentation.otherScreen.ticketScreen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -48,8 +52,13 @@ import com.soe.movieticketapp.util.MovieType
 import com.soe.movieticketapp.util.Padding
 import com.soe.movieticketapp.util.Spacing
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
-
-
+import com.soe.movieticketapp.util.ui.theme.blue02
+import com.soe.movieticketapp.util.ui.theme.blue03
+import com.soe.movieticketapp.util.ui.theme.blue04
+import com.soe.movieticketapp.util.ui.theme.blue06
+import com.soe.movieticketapp.util.ui.theme.blue07
+import com.soe.movieticketapp.util.ui.theme.darkNavy
+import com.soe.movieticketapp.util.ui.theme.lightNavy
 
 
 @Composable
@@ -98,6 +107,31 @@ fun TicketScreenContent(
     val context = LocalContext.current
 
 
+    val backgroundColor = if (isSystemInDarkTheme()){
+        darkNavy
+    }else{
+        blue02.copy(0.5f)
+    }
+
+    val backgroundTicketColor = if (isSystemInDarkTheme()){
+        lightNavy
+    }else{
+        blue03.copy(alpha = 0.5f)
+    }
+
+    val ratingColor = if (isSystemInDarkTheme()){
+        Color.Yellow
+    }else{
+        DarkGray
+    }
+
+    val textColor = if (isSystemInDarkTheme()){
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+    }else{
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+    }
+
+
     Scaffold(
         topBar = {
             TicketTopBar(
@@ -122,7 +156,7 @@ fun TicketScreenContent(
                         .height(500.dp)
                         .padding(Padding.Medium)
                         .clip(RoundedCornerShape(Padding.Medium))
-                        .background(colorResource(R.color.DarkBlue))
+                        .background(backgroundColor)
                         .align(Alignment.Center),
                 ){
 
@@ -178,13 +212,21 @@ fun TicketScreenContent(
                                     RatingBar(
                                         modifier = Modifier.padding(),
                                         rating = (movie.voteAverage?.div(2)),
-                                        starsColor = Color.Yellow
+                                        starsColor = ratingColor
                                     )
 
                                     RatingText(
-                                        modifier = Modifier.padding(),
+                                        modifier = Modifier
+                                            .padding(Padding.Small)
+                                            .border(
+                                                BorderStroke(
+                                                    1.dp,
+                                                    if (isSystemInDarkTheme()) Color.Yellow else Color.DarkGray,
+                                                )
+                                            )
+                                            .clip(RoundedCornerShape(Padding.Medium)),
                                         rating = movie.voteAverage,
-                                        color = Color.Yellow
+                                        color = ratingColor
                                     )
                                 }
 
@@ -238,7 +280,7 @@ fun TicketScreenContent(
                                     .padding(Padding.Small)
                                     .align(Alignment.TopCenter)
                                     .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
-                                    .background(Color(0xFF153E64)),
+                                    .background(backgroundTicketColor),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ){
@@ -330,6 +372,13 @@ fun TicketContent(
     checkoutText : String
 ) {
 
+
+    val textColor = if (isSystemInDarkTheme()){
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+    }else{
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = if (text == "Time" || text == "Seat") Alignment.End else Alignment.Start,
@@ -339,7 +388,7 @@ fun TicketContent(
             text = text,
             fontSize = FontSize.Medium,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+            color = textColor
 
         )
 
@@ -358,6 +407,64 @@ fun TicketContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES )
 @Composable
 private fun CheckoutScreenPreview() {
+    MovieTicketAppTheme {
+        TicketScreenContent(
+            date = "2023-11-20",
+            time = "10:00 AM",
+            seats = "A1, B2",
+            movie = Movie(
+                adult = false,
+                backdropPath = "/path/to/backdrop2.jpg",
+                posterPath = "/path/to/poster2.jpg",
+                genreIds = listOf(16, 35),
+                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+                mediaType = "movie",
+                firstAirDate = "2023-02-02",
+                id = 2,
+                imdbId = "tt7654321",
+                originalLanguage = "en",
+                originalName = "Original Name 2",
+                overview = "This is the overview of the second movie.",
+                popularity = 9.0,
+                releaseDate = "2023-02-02",
+                runtime = 90,
+                title = "Movie Title 2",
+                video = true,
+                voteAverage = 8.0,
+                voteCount = 200
+            ),
+            detail = Detail(
+                posterPath = "/path/to/poster2.jpg",
+                genres = listOf(Genre(3, "Animation"), Genre(4, "Comedy")),
+                id = 2,
+                imdbId = "tt7654321",
+                originalLanguage = "en",
+                overview = "This is the overview of the second movie.",
+                popularity = 9.0,
+                releaseDate = "2023-02-02",
+                runtime = 90,
+                title = "Movie Title 2",
+                video = true,
+                voteAverage = 8.0,
+                voteCount = 200,
+                budget = 1000000,
+                homepage = "https://www.example.com",
+                originalTitle = "Original Title 2",
+                revenue = 2000000,
+                tagline = "Tagline 2",
+                status = "Released"
+            ),
+            popUp = {}
+        )
+    }
+
+}
+
+
+
+@Preview(showBackground = true )
+@Composable
+private fun CheckoutScreenLightPreview() {
     MovieTicketAppTheme {
         TicketScreenContent(
             date = "2023-11-20",

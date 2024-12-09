@@ -33,7 +33,7 @@ fun ShowTime(
             textAlign = TextAlign.Center,
             style = androidx.compose.ui.text.TextStyle(
                 fontSize = if (selected) 20.sp else 14.sp,
-                color = if (selected) MaterialTheme.colorScheme.onBackground else Color.LightGray.copy(alpha = 0.6f) // Highlight center item
+                color = if (selected) MaterialTheme.colorScheme.onBackground else Color.Gray.copy(alpha = 0.6f) // Highlight center item
             ),
         )
     }

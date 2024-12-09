@@ -2,6 +2,7 @@ package com.soe.movieticketapp.presentation.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.soe.movieticketapp.R
 import com.soe.movieticketapp.presentation.common.TitleText
 import com.soe.movieticketapp.util.ui.theme.MovieTicketAppTheme
+import com.soe.movieticketapp.util.ui.theme.blue10
 import kotlinx.coroutines.delay
 
 
@@ -35,6 +37,12 @@ fun SplashScreen(
     openAndPopUp : (String, String) -> Unit,
     viewModel: SplashScreenViewModel = hiltViewModel(),
 ) {
+
+    val image = if (isSystemInDarkTheme()){
+        painterResource(R.drawable.splash_screen_background)
+    }else{
+        painterResource(R.drawable.splash_screen_light)
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -42,7 +50,7 @@ fun SplashScreen(
     ){
         Image(
             modifier = Modifier.fillMaxSize().align(Alignment.Center),
-            painter = painterResource(R.drawable.splash_screen_background),
+            painter = image,
             contentDescription = "splash_screen"
         )
 
@@ -54,13 +62,13 @@ fun SplashScreen(
         ) {
             Image(
                 modifier = Modifier.width(130.dp).height(60.dp),
-                painter = painterResource(R.drawable.splash_screen_logo),
+                painter = if (isSystemInDarkTheme())painterResource(R.drawable.splash_screen_logo) else painterResource(R.drawable.mupi_logo_splash),
                 contentDescription = "splash_screen"
             )
             Spacer(Modifier.height(20.dp))
             TitleText(
                 text = stringResource(R.string.splash_screen_text),
-                color = MaterialTheme.colorScheme.primary
+                color = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else blue10
             )
         }
 

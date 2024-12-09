@@ -3,7 +3,7 @@ package com.soe.movieticketapp.util.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Light theme colors
-val LightPrimary = Color(0xFF153E64)
+val LightPrimary = Color(0xFFe3e5ec)
 val LightSecondary = Color(0xFF4AD0EE)
 val LightTertiary = Color(0xFFFFC107)
 
@@ -12,9 +12,10 @@ val DarkPrimary = Color(0xFF04103A)
 val DarkSecondary = Color(0xFF4AD0EE)
 val DarkTertiary = Color(0xFFFFA000)
 
-
 val basicBlack = Color(0xFF1F191C)
 val basicWhite = Color(0xFFFFFBFD)
+val lightNavy = Color(0xFF153E64)
+val darkNavy = Color(0xFF13244A)
 
 
 val blue01 = Color(0xFFe3e5ec)
