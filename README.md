@@ -41,7 +41,7 @@ Include some screenshots of the app here to give users an idea of the design and
 </table>
 
 ### Installation
-1. Clone the repository: git clone https://github.com/SoeMoeAung060/calculat0r_app.git
+1. Clone the repository: git clone https://github.com/SoeMoeAung060/movie-app.git
 2. Open the project in Android Studio.
 3. Build and Run the app on an Android device or emulator.
 
