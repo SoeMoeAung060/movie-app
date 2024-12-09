@@ -22,7 +22,6 @@ Minimum SDK level 24
 - 
 
 ## Screenshot
-Include some screenshots of the app here to give users an idea of the design and layout.
 
 <table>
   <tr>
