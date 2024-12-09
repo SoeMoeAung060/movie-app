@@ -28,16 +28,13 @@ Include some screenshots of the app here to give users an idea of the design and
   <tr>
     <td><img src="docs/images/Home.png" alt="Home" width="200"/></td>
     <td><img src="docs/images/MovieCategory.png" alt="Movie Category" width="200"/></td>
-  </tr>
-  <tr>
     <td><img src="docs/images/Detail.png" alt="Detail" width="200"/></td>
     <td><img src="docs/images/SelectSeats.png" alt="Select Seats" width="200"/></td>
   </tr>
+
   <tr>
     <td><img src="docs/images/Checkout.png" alt="Checkout" width="200"/></td>
     <td><img src="docs/images/CheckoutSuccessful.png" alt="Checkout Successful" width="200"/></td>
-  </tr>
-  <tr>
     <td><img src="docs/images/SearchScreen.png" alt="Search Screen" width="200"/></td>
     <td><img src="docs/images/SearchHistory.png" alt="Search History" width="200"/></td>
   </tr>
