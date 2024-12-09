@@ -5,7 +5,7 @@ Welcome to my project! Here's some useful links:
 Minimum SDK level 24
 - [Kotlin](https://kotlinlang.org/)
 - [Courotines](https://github.com/Kotlin/kotlinx.coroutines)
-- [Flow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) for emitting values reactively
+- [Flow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/)
 - [Hilt](https://dagger.dev/hilt/)
 - [Coil](https://github.com/coil-kt/coil)
 - [Paging3](https://developer.android.com/topic/libraries/architecture/paging/v3-migration)
