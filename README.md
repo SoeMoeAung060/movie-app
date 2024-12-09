@@ -19,7 +19,6 @@ Minimum SDK level 24
 - [Navigation](https://developer.android.com/guide/navigation)
 - [Stripe](https://stripe.com/nz/payments)
 - [Cloud Firestore](https://firebase.google.com/docs/firestore)
-- 
 
 ## Screenshot
 
