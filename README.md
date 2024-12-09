@@ -22,15 +22,31 @@ Minimum SDK level 24
 - 
 
 ## Screenshot
+Include some screenshots of the app here to give users an idea of the design and layout.
 
-|                          |                          |
-|--------------------------|--------------------------|
-| ![Home](docs/images/Home.png) | ![Category](docs/images/MovieCategory.png) |
-| ![Detail](docs/images/Detail.png) | ![SelectSeats](docs/images/SelectSeats.png) |
-| ![Checkout](docs/images/Checkout.png) | ![CheckoutSuccessful](docs/images/CheckoutSuccessful.png) |
-| ![SearchScreen](docs/images/SearchScreen.png) | ![SearchHistory](docs/images/SearchHistory.png) |
+<table>
+  <tr>
+    <td><img src="docs/images/Home.png" alt="Home" width="200"/></td>
+    <td><img src="docs/images/MovieCategory.png" alt="Movie Category" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/Detail.png" alt="Detail" width="200"/></td>
+    <td><img src="docs/images/SelectSeats.png" alt="Select Seats" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/Checkout.png" alt="Checkout" width="200"/></td>
+    <td><img src="docs/images/CheckoutSuccessful.png" alt="Checkout Successful" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/SearchScreen.png" alt="Search Screen" width="200"/></td>
+    <td><img src="docs/images/SearchHistory.png" alt="Search History" width="200"/></td>
+  </tr>
+</table>
 
-
+### Installation
+1. Clone the repository: git clone https://github.com/SoeMoeAung060/calculat0r_app.git
+2. Open the project in Android Studio.
+3. Build and Run the app on an Android device or emulator.
 
 ### License
 This project is licensed under the MIT License. See the LICENSE file for more details.
