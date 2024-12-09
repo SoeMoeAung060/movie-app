@@ -1,4 +1,4 @@
-# My Android Project
+# Movie Ticket Project
 
 Welcome to my project! Here's some useful links:
 
